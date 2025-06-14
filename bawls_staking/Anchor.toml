@@ -5,19 +5,15 @@ package_manager = "yarn"
 resolution = true
 skip-lint = false
 
-[programs.localnet]
-bawls_staking = "9426uyFBpzXhVRxmfXzFoCgWP9shVJpYevsbSKoDyKkn"
+[programs.devnet]
+bawls_staking = "3zqSS8UUtnup2hX96jFqFTHmPteXRXV5xfHMYhEczhfS"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
-
-[test]
-startup_wait = 5000  # Wait 5 seconds before starting tests
-

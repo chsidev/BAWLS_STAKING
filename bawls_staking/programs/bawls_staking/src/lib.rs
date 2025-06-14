@@ -3,7 +3,7 @@ use anchor_spl::token::{self, Token, Transfer};
 use anchor_spl::token::TokenAccount;
 use anchor_spl::associated_token::{self, AssociatedToken};
 
-declare_id!("9426uyFBpzXhVRxmfXzFoCgWP9shVJpYevsbSKoDyKkn");
+declare_id!("3zqSS8UUtnup2hX96jFqFTHmPteXRXV5xfHMYhEczhfS");
 
 #[program]
 pub mod bawls_staking {
@@ -54,12 +54,28 @@ pub mod bawls_staking {
 
         let user_amount = amount - tax;
 
-        let cpi_ctx = ctx.accounts.transfer_back_context();
+        let bump = ctx.accounts.config.bump;
+        let seeds: &[&[u8]] = &[b"config", &[bump]];
+        let signer = &[seeds];
+
+        let cpi_ctx = ctx
+            .accounts
+            .transfer_back_context()
+            .with_signer(signer);
+
         token::transfer(cpi_ctx, user_amount)?;
 
         ctx.accounts.user_state.amount = 0;
         Ok(())
     }
+
+    pub fn initialize_user_state(ctx: Context<InitializeUserState>) -> Result<()> {
+        ctx.accounts.user_state.amount = 0;
+        ctx.accounts.user_state.start_time = 0;
+        ctx.accounts.user_state.authority = ctx.accounts.user.key();
+        Ok(())
+    }
+
 }
 
 #[derive(Accounts)]
@@ -123,6 +139,22 @@ pub struct Unstake<'info> {
     
     pub token_program: Program<'info, Token>,
 }
+
+#[derive(Accounts)]
+pub struct InitializeUserState<'info> {
+    #[account(
+        init,
+        payer = user,
+        space = 8 + 8 + 8 + 32,
+        seeds = [b"state", user.key().as_ref()],
+        bump
+    )]
+    pub user_state: Account<'info, UserState>,
+    #[account(mut)]
+    pub user: Signer<'info>,
+    pub system_program: Program<'info, System>,
+}
+
 
 #[account]
 pub struct Config {
