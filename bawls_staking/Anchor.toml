@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.devnet]
-bawls_staking = "3zqSS8UUtnup2hX96jFqFTHmPteXRXV5xfHMYhEczhfS"
+bawls_staking = "F1vAg8cyPh9yiQdmpZHNDiTFTjP9qsLjJcKjoUcKBzsw"
 
 [registry]
 url = "https://api.apr.dev"
@@ -17,3 +17,8 @@ wallet = "~/.config/solana/id.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
+
+[test]
+startup_wait = 10000
+shutdown_wait = 2000
+upgradeable = false
