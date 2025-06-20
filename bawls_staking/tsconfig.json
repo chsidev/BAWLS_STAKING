@@ -11,5 +11,5 @@
     "typeRoots": ["./node_modules/@types"],
     "types": ["mocha", "chai"]
   },
-  "include": ["tests/**/*.ts"]
+  "include": ["tests/**/*.ts", "target/types/**/*.ts"]
 }

@@ -6,3 +6,4 @@ node_modules
 test-ledger
 .yarn
 temp.json
+vault_debug.ts

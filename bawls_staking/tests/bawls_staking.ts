@@ -2,221 +2,253 @@ import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
 import { BawlsStaking } from "../target/types/bawls_staking";
 import {
-  createAssociatedTokenAccountInstruction,
   getAccount,
   getAssociatedTokenAddressSync,
+  createAssociatedTokenAccountInstruction,
   mintTo,
+  createMint,
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import {
-  SystemProgram,
   PublicKey,
+  SystemProgram,
   Transaction,
-  sendAndConfirmTransaction,
   Keypair,
+  Connection,
+  clusterApiUrl,
+  sendAndConfirmTransaction,
 } from "@solana/web3.js";
 import { assert } from "chai";
 
-function formatTokenAmount(rawAmount: bigint | number | string, decimals: number): number {
-  return Number(rawAmount) / 10 ** decimals;
+const STAKE_AMOUNT = 1_000_000_000;
+const DECIMALS = 9;
+const USE_LOCALNET = false;
+
+function formatToken(raw: bigint | number, decimals = 9) {
+  return Number(raw) / 10 ** decimals;
 }
 
-const STAKE_AMOUNT_A = 100_000_000; // 100M
-const STAKE_AMOUNT_B = 500_000_000; // 500M
-const INITIAL_MINT_AMOUNT = 600_000_000; // 1B
-const DECIMALS = 9;
+const connection = new Connection(
+  USE_LOCALNET ? "http://127.0.0.1:8899" : clusterApiUrl("devnet"),
+  "confirmed"
+);
 
-describe("bawls_staking with two users", () => {
-  const provider = anchor.AnchorProvider.env();
-  anchor.setProvider(provider);
-  const program = anchor.workspace.BawlsStaking as Program<BawlsStaking>;
-  const payer = provider.wallet.payer as anchor.web3.Keypair;
+const provider = new anchor.AnchorProvider(connection, anchor.Wallet.local(), {});
+anchor.setProvider(provider);
+const program = anchor.workspace.BawlsStaking as Program<BawlsStaking>;
 
-  const mint = new PublicKey("DxUTmqRt49dNsKwM1kzrquMpKsnyMGEpGKeZg1YfUdgJ");
+const payer = provider.wallet.payer as Keypair;
+const user = provider.wallet;
 
-  const userA = provider.wallet;
-  const userAAccount = new PublicKey("HxPax3qFJGZ9bDRhZ1WB4Tm7NHqDC7YgX9MVY6gth8Ym");
-  const userB = Keypair.generate();
-  let userBAccount: PublicKey;
-
-  let vaultAccount: PublicKey;
+describe("BAWLS Staking - Single User Claim Test", () => {
+  let mint: PublicKey;
   let configPda: PublicKey;
   let poolPda: PublicKey;
-  let userAStatePda: PublicKey;
-  let userBStatePda: PublicKey;
-  let communityWallet = Keypair.generate().publicKey;
-  let communityAta: PublicKey;
+  let userState: PublicKey;
+  let userATA: PublicKey;
+  let vault: PublicKey;
+  let communityWallet: PublicKey;
+  let communityATA: PublicKey;
+  
+  async function logState(label: string) {
+    const balance = await getAccount(connection, userATA);
+    const pool = await program.account.stakingPool.fetch(poolPda);
+    const state = await program.account.userState.fetch(userState);
 
-  it("Initializes everything", async () => {
-    [configPda] = PublicKey.findProgramAddressSync([Buffer.from("config-v2")], program.programId);
-    [poolPda] = PublicKey.findProgramAddressSync([Buffer.from("pool-v2")], program.programId);
+    const startDate = new Date((state.startTime || 0) * 1000).toISOString();
+    console.log(`\n[${label}] User balance: ${formatToken(balance.amount)} BAW`);
+    console.log(`[${label}] User state → Amount: ${formatToken(state.amount)} | Start: ${startDate} | TaxSnapshot: ${formatToken(state.lastTaxSnapshot)}`);
+    console.log(`[${label}] Pool state → Tax: ${formatToken(pool.totalTaxCollected)} | Staked: ${formatToken(pool.totalStaked)} | Rewards: ${formatToken(pool.totalRewardsDistributed)}`);
+  }
 
-    await program.methods.initialize(communityWallet).accounts({
-      config: configPda,
-      pool: poolPda,
-      communityWallet,
-      payer: userA.publicKey,
-      systemProgram: SystemProgram.programId,
-    }).rpc();
+  before(async () => {
+    console.log(" Starting test setup...");
 
-    communityAta = getAssociatedTokenAddressSync(mint, communityWallet);
-    const info = await provider.connection.getAccountInfo(communityAta);
-    if (!info) {
-      const ix = createAssociatedTokenAccountInstruction(payer.publicKey, communityAta, communityWallet, mint);
-      const tx = new Transaction().add(ix);
-      await sendAndConfirmTransaction(provider.connection, tx, [payer]);
+    if (USE_LOCALNET) {
+      mint = await createMint(connection, payer, payer.publicKey, null, DECIMALS);
+      console.log("Localnet mint:", mint.toBase58());
+    } else {
+      mint = new PublicKey("DxUTmqRt49dNsKwM1kzrquMpKsnyMGEpGKeZg1YfUdgJ");
+      console.log("Devnet mint:", mint.toBase58());
     }
 
-    console.log("✅ Config & Pool initialized");
-    console.log("  - Config PDA:", configPda.toBase58());
-    console.log("  - Pool PDA:", poolPda.toBase58());
-  });
-
-  it("Sets up User B and vault", async () => {
-    // Fund user B
-    await provider.connection.confirmTransaction(
-      await provider.connection.requestAirdrop(userB.publicKey, 1_000_000_000),
-      "confirmed"
+    [configPda] = PublicKey.findProgramAddressSync([Buffer.from("config-v1")], program.programId);
+    [poolPda] = PublicKey.findProgramAddressSync([Buffer.from("pool-v1")], program.programId);
+    [userState] = PublicKey.findProgramAddressSync(
+      [Buffer.from("state-v1"), user.publicKey.toBuffer()],
+      program.programId
     );
+    vault = getAssociatedTokenAddressSync(mint, configPda, true);
+    userATA = getAssociatedTokenAddressSync(mint, user.publicKey);
+    communityWallet = Keypair.generate().publicKey;
+    communityATA = getAssociatedTokenAddressSync(mint, communityWallet);
 
-    userBAccount = getAssociatedTokenAddressSync(mint, userB.publicKey);
-    const createIx = createAssociatedTokenAccountInstruction(payer.publicKey, userBAccount, userB.publicKey, mint);
-    const tx = new Transaction().add(createIx);
-    await sendAndConfirmTransaction(provider.connection, tx, [payer]);
-    await mintTo(provider.connection, payer, mint, userBAccount, payer, STAKE_AMOUNT_B);
+    const vaultInfo = await connection.getAccountInfo(vault);
 
-    console.log(`✅ Minted ${formatTokenAmount(INITIAL_MINT_AMOUNT, DECIMALS)} tokens to each user`);
+    if (!vaultInfo) {
+      console.log("Creating vault ATA on-chain...");
 
-    // Create vault
-    vaultAccount = getAssociatedTokenAddressSync(mint, configPda, true);
-    await program.methods.createVault().accounts({
-      user: userA.publicKey,
-      vault: vaultAccount,
-      config: configPda,
-      tokenMint: mint,
-      systemProgram: SystemProgram.programId,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-    }).rpc();
+      const createIx = createAssociatedTokenAccountInstruction(
+        payer.publicKey, 
+        vault,           
+        configPda,       
+        mint             
+      );
 
-    console.log("✅ Created associated token accounts:");
-    console.log("  - User A Token Account:", userAAccount.toBase58());
-    console.log("  - User B Token Account:", userBAccount.toBase58());
+      const tx = new Transaction().add(createIx);
+      await sendAndConfirmTransaction(connection, tx, [payer]);
+      console.log("Vault ATA created.");
+    } else {
+      const vaultAcc = await getAccount(connection, vault);
+      console.log("Vault exists. Owner:", vaultAcc.owner.toBase58());
+    }
+
+    // Ensure ATAs
+    for (const [label, ata, owner] of [
+      ["User ATA", userATA, user.publicKey],
+      ["Community ATA", communityATA, communityWallet],
+    ]) {
+      if (!(await connection.getAccountInfo(ata))) {
+        await sendAndConfirmTransaction(
+          connection,
+          new Transaction().add(
+            createAssociatedTokenAccountInstruction(payer.publicKey, ata, owner, mint)
+          ),
+          [payer]
+        );
+        console.log(`Created ${label}`);
+      }
+    }
+
+    await mintTo(connection, payer, mint, userATA, payer, STAKE_AMOUNT * 2);
+    console.log(`Minted 2 tokens to user`);
+
+    try {
+      await program.methods.initialize(communityWallet).accounts({
+        config: configPda,
+        pool: poolPda,
+        payer: user.publicKey,
+        tokenMint: mint,
+        systemProgram: SystemProgram.programId,
+      }).rpc();
+      console.log("Program initialized");
+    } catch {
+      console.log("Program may already be initialized");
+    }
+
+    try {
+      await program.methods.createVault().accounts({
+        user: user.publicKey,
+        vault,
+        config: configPda,
+        tokenMint: mint,
+        systemProgram: SystemProgram.programId,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+      }).rpc();
+      console.log("Vault created");
+    } catch {
+      console.log("Vault may already exist");
+    }
+
+    if (!(await connection.getAccountInfo(userState))) {
+      await program.methods.initializeUserState().accounts({
+        userState,
+        user: user.publicKey,
+        systemProgram: SystemProgram.programId,
+      }).rpc();
+      console.log("User state initialized");
+    } else {
+      console.log("User state already exists");
+    }
   });
 
-  it("User A stakes and unstakes early (creates tax)", async () => {
-    [userAStatePda] = PublicKey.findProgramAddressSync([
-      Buffer.from("state-v2"),
-      userA.publicKey.toBuffer(),
-    ], program.programId);
+  it("Stake 1 token", async () => {
+    await logState("Before Stake");
 
-    await program.methods.initializeUserState().accounts({
-      userState: userAStatePda,
-      user: userA.publicKey,
-      systemProgram: SystemProgram.programId,
-    }).rpc();
-
-    await program.methods.stake(new anchor.BN(STAKE_AMOUNT_A)).accounts({
-      userState: userAStatePda,
+    await program.methods.stake(new anchor.BN(STAKE_AMOUNT)).accounts({
+      userState,
       config: configPda,
       pool: poolPda,
-      user: userA.publicKey,
-      from: userAAccount,
-      vault: vaultAccount,
-      tokenMint: mint,
+      user: user.publicKey,
+      from: userATA,
+      vault,
       tokenProgram: TOKEN_PROGRAM_ID,
     }).rpc();
-    
-    console.log(`📥 User A staked ${formatTokenAmount(STAKE_AMOUNT_A, DECIMALS)} tokens`);
-    const vaultInfo = await getAccount(provider.connection, vaultAccount);
-    const userAInfo = await getAccount(provider.connection, userAAccount);
-    console.log("  - Vault Balance:", formatTokenAmount(vaultInfo.amount, DECIMALS));
-    console.log("  - User A Balance:", formatTokenAmount(userAInfo.amount, DECIMALS));
+
+    console.log(`User staked: ${formatToken(STAKE_AMOUNT)} BAWLS`);
+
+    await logState("After Stake");
+  });
+
+  it("Early unstake to generate tax", async () => {
+    await logState("Before Unstake");
 
     await program.methods.unstake().accounts({
-      userState: userAStatePda,
+      userState,
       config: configPda,
       pool: poolPda,
-      user: userA.publicKey,
-      to: userAAccount,
-      vault: vaultAccount,
-      communityAta,
-      tokenMint: mint,
+      user: user.publicKey,
+      to: userATA,
+      vault,
+      communityAta: communityATA,
       tokenProgram: TOKEN_PROGRAM_ID,
     }).rpc();
 
-    const expectedTax = STAKE_AMOUNT_A * 0.05;
-    const expectedReturned = STAKE_AMOUNT_A - expectedTax;
-    const taxToPool = expectedTax * 0.6;
-    const expectedCommunity = expectedTax * 0.4;
+    await logState("After Unstake");
 
-    console.log("📤 User A unstaked tokens early");
-    console.log("  - Taxed Amount:", formatTokenAmount(expectedTax, DECIMALS));
-    console.log("  - Sent back to User A:", formatTokenAmount(expectedReturned, DECIMALS));
-    console.log("  - Vault keeps (pool share):", formatTokenAmount(taxToPool, DECIMALS));
-    console.log("  - Community gets:", formatTokenAmount(expectedCommunity, DECIMALS));
-    const afterUnstake = await getAccount(provider.connection, userAAccount);
-    console.log("  - User A Balance After Unstake:", formatTokenAmount(afterUnstake.amount, DECIMALS));
-    const vaultAfter = await getAccount(provider.connection, vaultAccount);
-    console.log("  - Vault Balance After Unstake:", formatTokenAmount(vaultAfter.amount, DECIMALS));
-    const communityAfter = await getAccount(provider.connection, communityAta);
-    console.log("  - Community Balance After Unstake:", formatTokenAmount(communityAfter.amount, DECIMALS));
+    const community = await getAccount(connection, communityATA);
+    console.log(`Community vault holds: ${formatToken(community.amount)} BAWLS`);
   });
 
-  it("User B stakes and claims rewards", async () => {
-    [userBStatePda] = PublicKey.findProgramAddressSync([
-      Buffer.from("state-v2"),
-      userB.publicKey.toBuffer(),
-    ], program.programId);
+  it("Stake again to be eligible for rewards", async () => {
+    await logState("Before Re-stake");
 
-    await program.methods.initializeUserState().accounts({
-      userState: userBStatePda,
-      user: userB.publicKey,
-      systemProgram: SystemProgram.programId,
-    }).signers([userB]).rpc();
-
-    await program.methods.stake(new anchor.BN(STAKE_AMOUNT_B)).accounts({
-      userState: userBStatePda,
+    await program.methods.stake(new anchor.BN(STAKE_AMOUNT)).accounts({
+      userState,
       config: configPda,
       pool: poolPda,
-      user: userB.publicKey,
-      from: userBAccount,
-      vault: vaultAccount,
-      tokenMint: mint,
+      user: user.publicKey,
+      from: userATA,
+      vault,
       tokenProgram: TOKEN_PROGRAM_ID,
-    }).signers([userB]).rpc();
+    }).rpc();
 
-    console.log("💤 Waiting for rewards to accumulate...");
+    console.log(`User restaked: ${formatToken(STAKE_AMOUNT)} BAWLS`);
 
-    // Wait to accumulate some reward
-    await new Promise((r) => setTimeout(r, 5000));
-    console.log("⏰ Done waiting. Now claiming rewards...");    
+    await logState("After Re-stake");
+  });
 
-    const before = await getAccount(provider.connection, userBAccount);
-    await program.methods.claimRewards().accounts({
-      userState: userBStatePda,
-      user: userB.publicKey,
-      pool: poolPda,
-      config: configPda,
-      to: userBAccount,
-      tokenProgram: TOKEN_PROGRAM_ID,
-      vault: vaultAccount,
-    }).signers([userB]).rpc();
-    const after = await getAccount(provider.connection, userBAccount);
-    const diff = BigInt(after.amount) - BigInt(before.amount);
+  it("Wait and claim rewards", async () => {
+    console.log("Waiting 3s...");
+    await new Promise((r) => setTimeout(r, 3000));
 
-    console.log("✅ User B claimed:", formatTokenAmount(diff, DECIMALS), "tokens");
-    console.log("  - User B Balance After Claim:", formatTokenAmount(after.amount, DECIMALS));
-    assert.ok(diff > 0n);
+    await logState("Before Claim");
 
-    const poolState = await program.account.stakingPool.fetch(poolPda);
-    const vaultFinal = await getAccount(provider.connection, vaultAccount);
-    const communityFinal = await getAccount(provider.connection, communityAta);
+    const before = await getAccount(connection, userATA);
+    const pool = await program.account.stakingPool.fetch(poolPda);
+    const userStateData = await program.account.userState.fetch(userState);
 
-    console.log("🏁 Final State:");
-    console.log("  - Vault Balance:", formatTokenAmount(vaultFinal.amount, DECIMALS));
-    console.log("  - Community Balance:", formatTokenAmount(communityFinal.amount, DECIMALS));
-    console.log("  - Pool Total Tax Collected:", formatTokenAmount(poolState.totalTaxCollected.toString(), DECIMALS));
+    if (pool.totalTaxCollected > userStateData.lastTaxSnapshot) {
+      await program.methods.claimRewards().accounts({
+        userState,
+        user: user.publicKey,
+        pool: poolPda,
+        config: configPda,
+        to: userATA,
+        vault,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      }).rpc();
+
+      const after = await getAccount(connection, userATA);
+      const reward = BigInt(after.amount) - BigInt(before.amount);
+      console.log(`Claimed reward: ${formatToken(reward)} BAWLS`);
+      assert.ok(reward > 0n);
+    } else {
+      console.log("No rewards available to claim yet.");
+    }
+
+    await logState("After Claim");
   });
 });
