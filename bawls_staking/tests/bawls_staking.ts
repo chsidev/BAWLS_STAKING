@@ -41,7 +41,7 @@ const program = anchor.workspace.BawlsStaking as Program<BawlsStaking>;
 const payer = provider.wallet.payer as Keypair;
 const user = provider.wallet;
 
-describe("BAWLS Staking - Single User Claim Test", () => {
+describe("BAWLS Staking", () => {
   let mint: PublicKey;
   let configPda: PublicKey;
   let poolPda: PublicKey;
@@ -56,9 +56,9 @@ describe("BAWLS Staking - Single User Claim Test", () => {
     const pool = await program.account.stakingPool.fetch(poolPda);
     const state = await program.account.userState.fetch(userState);
 
-    const startDate = new Date((state.startTime || 0) * 1000).toISOString();
+    // const startDate = new Date((state.startTime || 0) * 1000).toISOString();
     console.log(`\n[${label}] User balance: ${formatToken(balance.amount)} BAW`);
-    console.log(`[${label}] User state → Amount: ${formatToken(state.amount)} | Start: ${startDate} | TaxSnapshot: ${formatToken(state.lastTaxSnapshot)}`);
+    // console.log(`[${label}] User state → Amount: ${formatToken(state.amount)} | Start: ${startDate} | TaxSnapshot: ${formatToken(state.lastTaxSnapshot)}`);
     console.log(`[${label}] Pool state → Tax: ${formatToken(pool.totalTaxCollected)} | Staked: ${formatToken(pool.totalStaked)} | Rewards: ${formatToken(pool.totalRewardsDistributed)}`);
   }
 
