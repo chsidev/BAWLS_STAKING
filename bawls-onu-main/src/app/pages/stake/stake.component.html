@@ -1,0 +1,41 @@
+<div class="staking-container">
+  <div class="left-panel">
+    <h1 class="title">$BAWLS STAKING</h1>
+    <p class="subtitle">Stake your $BAWLS to earn rewards 💧</p>
+
+    <div class="input-section">
+      <label for="stakeAmount">Amount to Stake</label>
+      <input id="stakeAmount" type="number" [(ngModel)]="stakeAmount" placeholder="0.0" />
+
+      <button (click)="stake()" class="btn-stake">STAKE</button>
+      <button (click)="unstake()" class="btn-unstake">UNSTAKE</button>
+      <button (click)="claim()" class="btn-claim">CLAIM REWARDS</button>
+    </div>
+
+    <div class="info-box">
+      <p><strong>Staked:</strong> {{ userStake }} $BAWLS</p>
+      <p><strong>Rewards:</strong> {{ rewards }} $BAWLS</p>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <!-- <img src="https://bawls-onu.s3.us-east-2.amazonaws.com/media/media/bawls.png" alt="BAWLS logo" /> -->
+  </div>
+
+  <div class="wallet-button-container">
+    <ng-container *ngIf="walletAddress; else connectBlock">
+      <button class="wallet-address-btn" (click)="disconnectWallet()">
+        <img src="assets/imgs/wallet-connect.png" alt="Connect Wallet" class="phantom-icon" />
+        {{ walletAddress | slice:0:6 }}...{{ walletAddress | slice:-4 }}
+      </button>
+    </ng-container>
+
+    <ng-template #connectBlock>
+      <button class="wallet-connect-btn" (click)="connectWallet()">
+        <img src="assets/imgs/wallet-connect.png" alt="Connect Wallet" class="phantom-icon" />
+        Connect Wallet
+      </button>
+    </ng-template>
+  </div>
+
+</div>

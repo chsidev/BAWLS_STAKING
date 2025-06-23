@@ -1,0 +1,26 @@
+<div class="space-y-2 w-full">
+    @for (item of items; track $index) {
+    <div class="rounded-lg overflow-hidden shadow-sm relative">
+        <div class="absolute left-0 top-0 h-full w-1.5 bg-{{borderColor}} z-10"></div>
+        
+        <mat-accordion>
+          <mat-expansion-panel 
+            [(expanded)]="item.isExpanded"
+            (opened)="toggleItem($index)"
+            class="border-0 shadow-none pl-5" 
+          >
+                <mat-expansion-panel-header class=" px-4 py-3">
+                    <mat-panel-title class="text-subtitles text-base md:text-xl uppercase text-gray-900 flex items-center gap-4">
+                        <img class="w-5 h-5 mt-1 shrink-0" [src]="icon" [alt]="altIcon" />
+                        <span class="flex-1">{{ item.title }}</span>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+            
+                <div class="px-4  bg-white text-body-semibold text-base md:text-lg space-y-2">
+                    <div [innerHTML]="formatContent(item.content)"></div>
+                </div>
+          </mat-expansion-panel>
+        </mat-accordion>
+    </div>
+    }
+</div>

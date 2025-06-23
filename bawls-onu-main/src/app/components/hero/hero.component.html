@@ -1,0 +1,69 @@
+<section id="hero" class="hero-section overflow-x-hidden md:mt-12">
+  <div
+    class="mx-auto h-full lg:pt-20 flex flex-col lg:flex-row justify-center items-center px-4 xl:px-0 max-w-[1800px]"
+  >
+    <!-- Title and Social media -->
+    <div
+      class="z-10 w-full lg:w-1/2 flex flex-col items-center text-center mb-8 lg:mb-0 gap-6"
+    >
+      <h1
+        class="text-6xl md:text-8xl lg:text-9xl xl:text-9xl text-titles text-center text-white mb-6"
+      >
+        $BAWLS ONU
+      </h1>
+      <p
+        class="text-lg md:text-xl leading-5 text-body-semibold text-center text-white max-w-[500px]"
+      >
+        Leading the new crypto RWI (Real World Impact) narrative creating a mega
+        culture coin coalition transcending blockchains.
+      </p>
+  
+      <div class="flex flex-row md:gap-x-2">
+        <app-button type="social" URL="https://t.me/BAWLS_OnU" image="assets/imgs/telegram.svg" altInfo="Telegram icon"/>
+        <app-button type="social" URL="https://discord.com/invite/mv2GE2edYh" image="assets/imgs/discord.svg" altInfo="Discord icon"/>
+        <app-button type="social" URL="https://x.com/MagicBawls" image="assets/imgs/x-icon.png" altInfo="X(Twitter) icon"/>
+      </div>
+    </div>
+
+    <!-- Right Content - Circular Text Wheel -->
+    <div class="relative w-full lg:w-1/2 flex justify-center items-center h-[300px] md:h-[400px] lg:h-[500px]">
+      <!-- Background Circle Behind Logo -->
+      <div class="absolute rounded-full bg-[#97dae0] 
+      w-[260px] h-[260px] 
+      md:w-[320px] md:h-[320px]
+      lg:w-[400px] lg:h-[400px]"></div>
+      
+      <!-- Centered Logo -->
+      <img
+        src="assets/imgs/colored_logo.png"
+        alt="BAWLS Logo"
+        priority
+        class="z-10 object-contain absolute
+        w-48 h-48 
+        md:w-56 md:h-56
+        lg:w-72 lg:h-72"
+      />
+
+      <!-- Circular Text Path -->
+      <div class="circular-text-wheel 
+      w-[300px] h-[300px]
+      md:w-[380px] md:h-[380px]
+      lg:w-[450px] lg:h-[450px]">
+        <svg viewBox="0 0 500 500" class="circular-text-svg">
+          <!-- Black Background Ring -->
+          <circle cx="250" cy="250" r="210" fill="none" stroke="#000000" stroke-width="50"/>
+          
+          <!-- Text Path with Exact Length Calculation -->
+          <path id="text-curve" fill="transparent" 
+                d="M250,250 m-200,0 a200,200 0 1,1 400,0 a200,200 0 1,1 -400,0"/>
+          <text class="rotating-text">
+            <textPath href="#text-curve" startOffset="0" textLength="1256" lengthAdjust="spacingAndGlyphs">
+              DON'T YOU LOVE • BAWLS ONU • DON'T YOU LOVE • BAWLS ONU • 
+              DON'T YOU LOVE • BAWLS ONU • DON'T YOU LOVE • BAWLS ONU •
+            </textPath>
+          </text>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>

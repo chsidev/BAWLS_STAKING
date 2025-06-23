@@ -1,0 +1,76 @@
+<!-- Loading Skeletons -->
+@if (loading) {
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    @for (i of [1, 2, 3]; track i) {
+      <div class="animate-pulse bg-gray-200 rounded-lg h-[300px] w-full"></div>
+    }
+  </div>
+}
+
+<!-- No Articles -->
+@else if (!articles.length) {
+    <div class="col-span-full text-center py-16 px-4 bg-slate-800 rounded-lg max-w-3xl mx-auto">
+        <div class="flex flex-col items-center justify-center space-y-4">
+        <!-- Icon -->
+        <div class="bg-slate-700 p-4 rounded-full">
+           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4h11a2 2 0 0 1 2 2v11m-1.172 2.821A2 2 0 0 1 19 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 1.156-1.814M7 8h1m4 0h5M7 12h5m4 0h1M7 16h9M3 3l18 18" />
+            </svg>
+        </div>
+
+        <!-- Title -->
+        <p class="text-white text-xl md:text-2xl text-subtitles">No Articles Found</p>
+
+        <!-- Subtitle -->
+        <p class="text-slate-400 text-sm md:text-base max-w-md text-body">
+            There are currently no uploaded articles to display. Please try again later
+        </p>
+        </div>
+    </div>
+}
+
+<!-- Articles Present -->
+@else {
+    <!-- Desktop view (≥1024px) as grid -->
+    <div class="hidden lg:grid grid-cols-3 gap-4">
+        @for (article of articles; track article.title) {
+            <app-article-card [article]="article" />
+        }
+    </div>
+
+    <!-- Mobile/Tablet carousel -->
+    <div class="lg:hidden relative w-full">
+
+        <!-- Left Arrow -->
+        <button
+            (click)="scrollTo(currentIndex() - 1)"
+            class="hidden sm:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-black/60 text-white w-10 h-10 aspect-square rounded-full items-center justify-center"
+            aria-label="Previous"
+        >
+            ‹
+        </button>
+
+        <!-- Right Arrow -->
+        <button
+            (click)="scrollTo(currentIndex() + 1)"
+            class="hidden sm:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-black/60 text-white w-10 h-10 aspect-square rounded-full items-center justify-center"
+            aria-label="Next"
+        >
+            ›
+        </button>
+
+        <!-- Scrollable carousel -->
+        <div
+            #carousel
+            class="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory px-4 py-6 -mx-4"
+            (touchstart)="onTouchStart($event)"
+            (touchend)="onTouchEnd($event)"
+        >
+            @for (article of articles; track article.title) {
+                <div class="carousel-item snap-center shrink-0 w-full max-w-[20rem] sm:max-w-[22rem] mx-auto">
+                    <app-article-card [article]="article" />
+                </div>
+            }
+        </div>
+    </div>
+}

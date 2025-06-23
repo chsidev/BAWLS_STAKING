@@ -1,0 +1,205 @@
+/* Custom styles to complement Tailwind */
+:host {
+    display: block;
+    width: 100%;
+  }
+  
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .modal-image-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 75%; /* Adjust based on your aspect ratio needs */
+  }
+  
+  .modal-image-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+/* Animation styles */
+:host {
+  display: block;
+  width: 100%;
+}
+
+/* Modal enter/leave transitions */
+.modal-enter {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.modal-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+
+.modal-leave {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.modal-leave-active {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 150ms ease-in, transform 150ms ease-in;
+}
+
+/* Backdrop animation */
+.backdrop-enter {
+  opacity: 0;
+}
+
+.backdrop-enter-active {
+  opacity: 1;
+  transition: opacity 200ms ease-out;
+}
+
+.backdrop-leave {
+  opacity: 1;
+}
+
+.backdrop-leave-active {
+  opacity: 0;
+  transition: opacity 150ms ease-in;
+}
+
+/* Image hover effect */
+.img-hover {
+  transition: transform 0.3s ease;
+}
+
+.img-hover:hover {
+  transform: scale(1.02);
+}
+
+/* Video styles */
+.video-thumbnail {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.video-thumbnail::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  transition: background 0.3s ease;
+}
+
+.video-thumbnail:hover::after {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* Modal video player */
+.modal-video {
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+
+/* Play button overlay */
+.play-button {
+  transition: all 0.3s ease;
+  transform: scale(1);
+}
+
+.play-button:hover {
+  transform: scale(1.1);
+}
+/* Base Styles */
+/* Base Styles */
+.bento-grid {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.bento-item {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* Media Containers */
+.media-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.media-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* Mobile Layout (2 columns) */
+@media (max-width: 639px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  /* Full width for 2-col items */
+  [style*="grid-column: span 2"] {
+    grid-column: span 2 / span 2 !important;
+  }
+  
+  /* Half width for 1-col items */
+  [style*="grid-column: span 1"] {
+    grid-column: span 1 / span 1 !important;
+  }
+  
+  /* Adjust row heights */
+  [style*="grid-row: span 2"] {
+    grid-row: span 2 / span 2 !important;
+  }
+  
+  /* Remove any custom classes that might interfere */
+  .bg-yellow-100 {
+    background-color: transparent !important;
+  }
+}
+
+/* Tablet Layout (2 columns) */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  
+  /* Make 1-col items more visible */
+  [style*="grid-column: span 1"] {
+    min-width: 45%; /* Prevents them from being too thin */
+  }
+  
+  /* Full width for 2-col items */
+  [style*="grid-column: span 2"] {
+    grid-column: span 2 / span 2 !important;
+  }
+  
+  /* Consistent row heights */
+  [style*="grid-row: span 2"] {
+    grid-row: span 2 / span 2 !important;
+  }
+}
+
+/* Desktop Layout */
+@media (min-width: 1024px) {
+  .bento-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}

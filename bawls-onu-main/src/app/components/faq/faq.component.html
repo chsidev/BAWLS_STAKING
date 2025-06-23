@@ -1,0 +1,14 @@
+<section id="faq" class="bg-faq w-full px-4 sm:px-6 py-8 flex flex-col items-center gap-4">
+    <!-- Title -->
+    <h2 class="text-white text-4xl md:text-5xl text-subtitles text-center bg-blue-faq py-2 px-12 md:px-40 rounded-full">
+        FAQ
+    </h2>
+
+    <div class="container flex flex-col p-7 bg-blue-faq rounded-xl">
+        <app-accordion
+            [items]="accordionItems"
+            (itemToggled)="onItemToggled($event)"
+        />
+    </div>
+    
+</section>

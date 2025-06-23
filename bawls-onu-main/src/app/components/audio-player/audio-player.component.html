@@ -1,0 +1,136 @@
+<div class="bg-blue-faq text-white rounded-2xl p-4 max-w-md mx-auto shadow-lg space-y-4">
+  <!-- Skeleton Loading -->
+  @if (loading) {
+    <div class="space-y-4 animate-pulse">
+      <div class="flex items-center space-x-4">
+        <div class="w-16 h-16 bg-blue-900 rounded-full"></div>
+        <div class="flex-1 space-y-2">
+          <div class="h-4 bg-blue-900 rounded w-3/4"></div>
+          <div class="h-3 bg-blue-800 rounded w-1/2"></div>
+        </div>
+      </div>
+      <div class="h-2 bg-blue-800 rounded w-full"></div>
+      <div class="h-2 bg-blue-800 rounded w-full"></div>
+    </div>
+  } @else if (!playlist.length) {
+    <!-- Empty State -->
+    <div class="flex flex-col items-center justify-center text-center py-8 space-y-4 ">
+      <div class="bg-blue-800 w-16 h-16 flex items-center justify-center rounded-full">
+        <i class="fas fa-music text-2xl text-blue-200"></i>
+      </div>
+      <p class="text-white text-lg text-body-semibold">No Tracks Available</p>
+      <p class="text-base text-white text-body">Wait for an incredible tracks of our community.</p>
+    </div>
+  } @else  {
+    <section class="border border-white rounded-xl p-2">
+      <!-- Now Playing Info -->
+      <div class="flex items-center space-x-4">
+        <img
+          [src]="currentTrack.thumbnail?.file || '/assets/imgs/icon_thumbnail_default.avif'"
+          alt="Thumbnail"
+          class="w-16 h-16 rounded-full object-cover"
+        />
+        <div class="text-sm">
+          <p class="font-semibold">{{ currentTrack.title  }}</p>
+          <p class="text-xs">{{ currentTrack.author  }}</p>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="w-full flex items-center justify-between text-xs text-white">
+        <span>{{ formatTime(currentTime) }}</span>
+        <input
+          type="range"
+          min="0"
+          [max]="duration"
+          [value]="currentTime"
+          (input)="seekTo($event)"
+          class="w-full mx-2 accent-blue-400"
+        />
+        <span>{{ formatTime(duration) }}</span>
+      </div>
+
+      <!-- Controls -->
+      <div class="flex items-center justify-between gap-4 text-white pt-1">
+        <!-- Playlist Toggle -->
+        <div class="w-10 pl-2">
+          <button (click)="togglePlaylist()" class="hover:text-blue-200 transition">
+            <i [@chevronRotate]="isPlaylistVisible ? 'expanded' : 'collapsed'" class="fas fa-chevron-down"></i>
+          </button>
+        </div>
+
+        <!-- Center Controls -->
+        <div class="flex items-center gap-4 justify-center text-white">
+          <button (click)="toggleShuffle()" [class.text-blue-600]="isShuffling">
+            <i class="fas fa-random text-sm sm:text-base"></i>
+          </button>
+          <button (click)="playPrevious()">
+            <i class="fas fa-backward text-sm sm:text-base"></i>
+          </button>
+          <button (click)="togglePlayPause()" class="text-xl sm:text-2xl">
+            <i [ngClass]="isPlaying ? 'fas fa-pause' : 'fas fa-play'"></i>
+          </button>
+          <button (click)="playNext()">
+            <i class="fas fa-forward text-sm sm:text-base"></i>
+          </button>
+          <button (click)="toggleRepeat()" [class.text-blue-600]="isRepeating">
+            <i class="fas fa-redo text-sm sm:text-base"></i>
+          </button>
+        </div>
+
+        <!-- Volume Control -->
+        <div class="relative flex-shrink-0">
+          <button
+            (click)="toggleVolumeSlider()"
+            class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center bg-blue-800 rounded-full hover:bg-blue-700 transition"
+          >
+            <i
+              [ngClass]="isMuted ? 'fas fa-volume-mute' : 'fas fa-volume-up'"
+              class="text-xs sm:text-sm text-white"
+            ></i>
+          </button>
+
+          @if (showVolumeSlider) {
+            <div
+              class="absolute bottom-full right-0 mb-2 w-20 sm:w-24 p-2 bg-blue-900 rounded shadow-lg transition-opacity duration-300"
+            >
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                [value]="volume"
+                (input)="changeVolume($event)"
+                class="w-full accent-blue-400 h-1"
+              />
+            </div>
+          }
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Playlist -->
+    <div [@playlistToggle]="isPlaylistVisible ? 'visible' : 'hidden'" class="transition-all duration-300 ease-in-out">
+      @if (playlist.length > 0) {
+        @for (track of playlist; track $index) {
+          <div
+            (click)="selectTrack(track)"
+            class="flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-blue-900 transition"
+            [class.bg-blue-800]="track === currentTrack"
+          >
+            <img
+              [src]="track?.thumbnail?.file || '/assets/imgs/icon_thumbnail_default.avif'"
+              class="w-10 h-10 object-cover rounded"
+              alt="Track Thumbnail"
+            />
+            <div class="text-sm">
+              <p class="text-white font-medium truncate">{{ track.title }}</p>
+              <p class="text-xs text-gray-200 truncate">{{ track.author }}</p>
+            </div>
+          </div>
+        }
+      } 
+    </div>
+  }
+</div>

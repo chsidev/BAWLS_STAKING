@@ -1,0 +1,116 @@
+<div id="videos" class="w-full flex flex-col gap-6 p-4 bg-video-section">
+  <div class="flex flex-col justify-center items-center gap-4">
+    <h2 class="text-black text-3xl md:text-4xl text-titles text-center ">BAWLS in Motion</h2>
+    <p class="max-w-xl text-body-semibold text-gray-800 md:text-lg text-center">
+      Got the BAWLS? Check out our latest videos and see what the hype's all about.
+    </p>
+  </div>
+  
+
+  <!-- Skeleton Loader while loading -->
+  @if (loading) {
+    <!-- Video player skeleton -->
+    <div class="w-full max-w-4xl mx-auto animate-pulse bg-gray-200 rounded-lg h-72"></div>
+
+    <!-- Playlist skeleton -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+      @for (item of skeletonItems; track $index) {
+        <div class="flex items-center gap-4 border p-4 rounded-lg animate-pulse bg-gray-100">
+          <div class="w-24 h-14 bg-gray-300 rounded-lg"></div>
+          <div class="flex flex-col gap-2 flex-1">
+            <div class="h-4 bg-gray-300 rounded w-3/4"></div>
+            <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Video Player when data is loaded -->
+  @if (!loading && videos.length > 0) {
+    <!-- Container: Video + Playlist -->
+    <div class="max-w-6xl mx-auto w-full flex flex-col lg:flex-row gap-6 px-4 mb-4">
+      <!-- Video Section -->
+      <div class="flex-1">
+        <vg-player (onPlayerReady)="onPlayerReady($event)">
+          <vg-overlay-play />
+          <vg-buffering vgFor="singleVideo" />
+          <vg-scrub-bar>
+            <vg-scrub-bar-current-time />
+            <vg-scrub-bar-buffering-time />
+          </vg-scrub-bar>
+          <vg-controls>
+            <vg-play-pause />
+            <vg-playback-button />
+            <vg-time-display vgProperty="current" vgFormat="mm:ss" />
+            <vg-scrub-bar class="pointer-events-none" />
+            <vg-time-display vgProperty="left" vgFormat="mm:ss" />
+            <vg-time-display vgProperty="total" vgFormat="mm:ss" />
+            <vg-mute />
+            <vg-volume />
+            <vg-fullscreen />
+          </vg-controls>
+
+          <video
+            [vgMedia]="$any(media)"
+            #media
+            id="singleVideo"
+            [src]="currentVideo?.file?.file"
+            [attr.preload]="preload"
+            crossorigin
+            class="rounded shadow-md w-full aspect-video"
+          ></video>
+        </vg-player>
+      </div>
+
+      <!-- Playlist Sidebar -->
+      <aside class="w-full lg:w-80 flex flex-col gap-4 max-h-[600px] overflow-y-auto bg-pink-500 rounded-lg p-3 shadow-md">
+        <h3 class="text-lg text-body-semibold text-white px-1">Up Next</h3>
+
+        @for (video of videos; track video.title) {
+          <div
+            (click)="changeVideo(video)"
+            class="cursor-pointer flex items-start gap-3 p-2 rounded-lg transition  bg-[#F97E44] hover:bg-orange-500"
+            [ngClass]="{ 'ring-2 ring-offset-2 ring-gray-300': video === currentVideo}"
+          >
+            <img
+              [src]=" video.thumbnail?.file || '/assets/imgs/icon_black.svg'"
+              alt="thumbnail"
+              class="w-8 h-6 object-cover rounded"
+            />
+            <div class="flex flex-col text-sm overflow-hidden">
+              <p class="truncate text-body text-white">
+                {{ video.title }}
+              </p>
+              <!-- <p class="truncate text-gray-500 text-xs">
+                {{ video?.description || 'No description' }}
+              </p> -->
+            </div>
+          </div>
+        }
+      </aside>
+    </div>
+  }
+  <!-- Empty State -->
+  @if (!loading && videos.length === 0) {
+    <div class="col-span-full text-center py-16 px-4 bg-slate-800 rounded-lg max-w-3xl mx-auto">
+      <div class="flex flex-col items-center justify-center space-y-4">
+        <!-- Icon -->
+        <div class="bg-slate-700 p-4 rounded-full">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+
+        <!-- Title -->
+        <p class="text-white text-xl md:text-2xl text-subtitles">No Videos Found</p>
+
+        <!-- Subtitle -->
+        <p class="text-slate-400 text-sm md:text-base max-w-md text-body">
+          There are currently no uploaded videos to display in the playlist.
+        </p>
+      </div>
+    </div>
+  }
+</div>

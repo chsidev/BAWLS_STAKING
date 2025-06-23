@@ -1,0 +1,40 @@
+<section id="impact" class="bg-section w-full px-4 sm:px-6 py-8 flex flex-col items-center gap-4">
+    <div class="container flex flex-col gap-4 md:flex-row max-w-7xl mx-auto justify-center"> <!-- Added mx-auto and justify-center -->
+        <!-- Left Column -->
+        <div class="flex-1 flex flex-col items-center md:items-start lg:items-center"> <!-- Improved centering logic -->
+            <div class="text-center md:text-left lg:text-center text-4xl md:text-5xl"> <!-- Responsive text alignment -->
+                <p class="text-subtitles ">
+                    Check your
+                </p>
+                <span class="text-subtitles text-white">BAWLS</span>
+            </div>
+
+            <div class="flex max-w-[200px] md:max-w-[400px] lg:mt-4"> 
+                <img class="object-contain w-full h-auto" src="assets/imgs/meme_kick.webp" alt="BAWLS kicking BAWLS" loading="lazy">
+            </div>
+
+            <div class="text-center md:text-left lg:text-center text-4xl md:text-5xl"> <!-- Responsive text alignment -->
+                <p class="text-subtitles">
+                    Stack your
+                </p>
+                <span class="text-subtitles text-white">BAWLS</span>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="flex-1 flex justify-start items-center">
+            <ul class="list-none space-y-10 lg:whitespace-nowrap">
+                @for (item of items; track $index) {
+                    <li class="flex items-start">
+                        <img 
+                            class="w-6 h-6 mr-2 drop-shadow-md" 
+                            src="/assets/imgs/icon_blue.svg"
+                            alt="bullet point bawls"
+                        >
+                        <span class="text-white text-body-bold">{{item}}</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</section>

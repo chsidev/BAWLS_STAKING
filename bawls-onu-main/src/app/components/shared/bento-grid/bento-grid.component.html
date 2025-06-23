@@ -1,0 +1,113 @@
+<div class="bento-grid" 
+     [ngStyle]="gridStyle"
+     [style.--gap]="gap + 'px'">
+     
+  @for (item of items; track $index) {
+    <div 
+      class="bento-item"
+      [style.gridColumn]="getItemColSpan(item)"
+      [style.gridRow]="getItemRowSpan(item)"
+      [style.--cols]="item.cols"
+      [class]="item.customClass"
+    >
+      @if (item.title) {
+        <h3 class="bento-title">{{ item.title }}</h3>
+      }
+      
+      <div class="media-container" (click)="openModal(item.content)">
+        @switch (item.content.type) {
+          @case ('text') {
+            <div class="prose" [innerHTML]="item.content.data"></div>
+          }
+          
+          @case ('image') {
+            <img ngSrc="{{item.content.data}}"
+                 [alt]="item.content.alt || item.title || 'Image'"
+                 fill
+                 class="media-content"
+                 loading="lazy"
+                 >
+            @if (item.title) {
+              <div class="title-overlay">
+                {{ item.title }}
+              </div>
+            }
+          }
+          
+          @case ('video') {
+            @if (item.content.thumbnail) {
+              <img ngSrc="{{item.content.thumbnail}}"
+                   [alt]="item.title || 'Video thumbnail'"
+                   fill
+                   class="media-content"
+                   loading="lazy"
+
+                   >
+            } @else {
+              <div class="bg-gray-200 w-full h-full flex items-center justify-center">
+                <svg class="w-12 h-12 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                </svg>
+              </div>
+            }
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="play-button">
+                <svg class="w-6 h-6 text-gray-800" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                </svg>
+              </div>
+            </div>
+          }
+          
+          @case ('component') {
+            <ng-container *ngComponentOutlet="item.content.component; inputs: item.content.inputs"></ng-container>
+          }
+        }
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Modal -->
+@if (showModal && modalContent) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+       (click)="closeModal()">
+       
+    <div class="relative max-w-4xl w-full max-h-[90vh] bg-white rounded-xl overflow-hidden"
+         (click)="$event.stopPropagation()">
+         
+      <button (click)="closeModal()"
+              class="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center 
+                    bg-white/80 hover:bg-white rounded-full shadow-lg transition-transform hover:scale-110">
+        &times;
+      </button>
+      
+      @switch (modalContent.type) {
+        @case ('image') {
+          <div class="w-full h-[80vh] relative">
+            <img ngSrc="{{modalContent.data}}"
+                 [alt]="modalContent.alt || modalContent.caption || 'Enlarged view'"
+                 fill
+                 class="object-contain"
+                 >
+          </div>
+        }
+        
+        @case ('video') {
+          <div class="w-full aspect-video bg-black">
+            <video controls autoplay class="w-full h-full object-contain">
+              <source [src]="modalContent.data" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        }
+      }
+      
+      @if (modalContent.caption) {
+        <div class="p-4 text-center bg-white">
+          {{ modalContent.caption }}
+        </div>
+      }
+    </div>
+  </div>
+}

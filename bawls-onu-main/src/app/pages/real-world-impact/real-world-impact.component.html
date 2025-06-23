@@ -1,0 +1,91 @@
+<div class="flex flex-col w-full pt-4">
+    <section class="mb-4">
+        <h2 class="text-white text-4xl md:text-5xl text-titles text-center">
+            REAL WORLD IMPACT COALITION
+        </h2>
+    </section>
+
+    <app-marquee [tags]="tags" background="bg-[#fd3da0]"/>
+
+    <section class="text-white text-lg md:text-xl leading-relaxed my-4 mx-2">
+        <p class="text-body font-bold text-center">
+            RWI (Real World Impact) projects are initiatives that mobilize their communities to create positive social
+        </p>
+
+        <p class="text-body font-bold text-center ">
+            change through awareness campaigns and/or fundraising efforts. Their goal is to bridge the digital
+        </p>
+
+        <p class="text-body font-bold text-center ">
+            world with real-life causes, encouraging active participation and collective impact.
+        </p>
+    </section>  
+
+    <div 
+        class="
+            flex flex-wrap justify-center gap-4 mx-4
+        "
+    >   
+        @if(loading) {
+            @for (item of skeletonItems; track $index) {
+                <div class="flex flex-col items-center text-center bg-sky-600 p-6 rounded-lg w-full max-w-xs animate-pulse">
+                <!-- Skeleton avatar -->
+                <div class="w-24 h-24 rounded-full bg-sky-500/80 mb-4 animate-pulse"></div>
+                
+                <!-- Skeleton name -->
+                <div class="h-6 w-3/4 bg-sky-500/80 rounded mb-2 animate-pulse"></div>
+                
+                <!-- Skeleton text -->
+                <div class="w-full space-y-2 mt-2">
+                    <div class="h-3 w-full bg-sky-500/80 rounded animate-pulse"></div>
+                    <div class="h-3 w-5/6 bg-sky-500/80 rounded animate-pulse"></div>
+                    <div class="h-3 w-4/6 bg-sky-500/80 rounded animate-pulse"></div>
+                </div>
+                </div>
+            }
+        } @else {
+            @for (member of members; track $index) {
+                <div class="flex flex-col items-center text-center bg-sky-600 p-6 rounded-lg w-full max-w-xs animate-popIn">
+                    <div class="w-24 h-24 rounded-full bg-white p-1 mb-4">
+                        <img 
+                        [src]="member.thumbnail.file" 
+                        alt="{{ member.name }}" 
+                        class="w-full h-full rounded-full object-cover"
+                        />
+                    </div>
+    
+                    <h3 class="text-white text-xl text-subtitles mb-2">{{ member.name }}</h3>
+    
+                    <p class="text-white text-sm text-body leading-relaxed">
+                        {{ member.narrative }}
+                    </p>
+                </div>
+            } @empty {
+                <div class="col-span-full text-center py-16 px-4 bg-slate-800 rounded-lg">
+                    <div class="flex flex-col items-center justify-center space-y-4">
+                      <!-- Icon -->
+                      <div class="bg-slate-700 p-4 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                  
+                      <!-- Title -->
+                      <p class="text-white text-xl md:text-2xl text-subtitles">No Members Found</p>
+                  
+                      <!-- Subtitle -->
+                      <p class="text-slate-400 text-sm md:text-base max-w-md text-body">
+                        There are currently no coalition members to display.
+                      </p>
+                    </div>
+                </div>
+                  
+            }
+        }
+        
+    </div>
+
+   
+
+    <app-footer [links]="linksFooter"/>
+</div>

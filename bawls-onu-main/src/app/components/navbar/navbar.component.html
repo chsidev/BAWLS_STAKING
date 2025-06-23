@@ -1,0 +1,44 @@
+<header class="border-gray-200 gradient sticky top-0 z-50">
+  <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+    <div routerLink="" class="flex items-center space-x-3 rtl:space-x-reverse cursor-pointer">
+        <img src="assets/imgs/icon.svg" class="h-8" alt="Bawls Logo" loading="eager"/>
+        <span class="self-center text-2xl tracking-wide text-white text-titles">$BAWLS ONU</span>
+    </div>
+    <button 
+      type="button" 
+      class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-white rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:hover:bg-blue-600 dark:focus:ring-blue-500" 
+      (click)="toggleMenu()"
+      aria-controls="navbar-default" 
+      [attr.aria-expanded]="isMenuOpen"
+    >
+        <span class="sr-only">Open main menu</span>
+        <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+        </svg>
+    </button>
+    <div 
+      clickOutside
+      (clickOutside)="closeMenu()"
+      [class.hidden]="!isMenuOpen" 
+      class="w-full lg:block lg:w-auto" 
+      id="navbar-default"
+    >
+      <ul class="font-medium flex flex-col p-4 lg:p-0 mt-4 border-2 border-gray-100 rounded-lg bg-white/20 lg:bg-transparent lg:flex-row lg:space-x-8 rtl:space-x-reverse lg:mt-0 lg:border-0 dark:border-gray-700">
+        @for (item of menuItems; track $index) {
+          <li>
+            <a 
+              (click)="scrollToSection(item.id)" 
+              [ngClass]="{
+                'bg-[#ff81d0] text-white lg:bg-transparent' : item.isActive,
+                'hover:bg-[#ff81d0]': !item.isActive
+              }"
+              class="block py-2 px-3 cursor-pointer text-gray-900 rounded-sm lg:hover:bg-transparent lg:border-0 lg:hover:text-white lg:p-0 lg:dark:hover:bg-transparent"
+            >
+              {{ item.name }}
+            </a>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</header>

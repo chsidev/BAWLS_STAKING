@@ -1,0 +1,15 @@
+.bg-grid {
+    background: rgb(68,191,249);
+    background: -moz-linear-gradient(180deg, rgba(68,191,249,0.7) 0%, rgba(250,122,202,1) 100%);
+    background: -webkit-linear-gradient(180deg, rgba(68,191,249,0.7) 0%, rgba(250,122,202,1) 100%);
+    background: linear-gradient(180deg, rgba(68,191,249,0.7) 0%, rgba(250,122,202,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#44bff9",endColorstr="#fa7aca",GradientType=1);
+}
+
+.bg-tokenomics{
+    background: rgb(250,122,202);
+    background: -moz-linear-gradient(180deg, rgba(250,122,202,1) 0%, rgba(68,191,249,1) 100%);
+    background: -webkit-linear-gradient(180deg, rgba(250,122,202,1) 0%, rgba(68,191,249,1) 100%);
+    background: linear-gradient(180deg, rgba(250,122,202,1) 0%, rgba(68,191,249,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#fa7aca",endColorstr="#44bff9",GradientType=1);
+}

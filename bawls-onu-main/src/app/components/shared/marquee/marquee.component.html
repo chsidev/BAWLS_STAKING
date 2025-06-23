@@ -1,0 +1,12 @@
+<div class="w-full overflow-hidden py-3" [class]="background">
+    <div class="inline-flex animate-marquee whitespace-nowrap items-center">
+        @for (tag of duplicatedItems; track $index) {
+            @if (tag) {
+                <span class="mx-10 text-2xl text-body-semibold ">{{ tag }}</span>
+            }
+            @else {
+                <img [src]="imageUrl" class="mx-10 h-8 w-8 object-contain">
+            }
+        }
+    </div>
+</div>

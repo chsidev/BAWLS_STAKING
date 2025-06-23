@@ -1,0 +1,120 @@
+.carousel-container {
+    -webkit-tap-highlight-color: transparent;
+    padding-bottom: 1rem;
+  
+    @media (min-width: 640px) {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+  
+  .carousel-track {
+    will-change: transform;
+    user-select: none;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    
+    &.transition-none {
+      transition: none;
+    }
+  }
+  
+  .carousel-item {
+    padding: 0 0.5rem;
+    
+    @media (max-width: 639px) {
+      padding: 0 0.25rem;
+    }
+  }
+  
+  .member-card {
+    &:active {
+      transform: scale(0.98);
+    }
+    
+    @media (max-width: 639px) {
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      
+      a, button {
+        min-height: 44px;
+        min-width: 44px;
+      }
+    }
+  }
+  
+  // Responsive adjustments
+  @media (max-width: 639px) {
+    .carousel-track {
+      transition-duration: 0.2s;
+    }
+    
+    .member-card {
+      transition: transform 0.15s ease;
+      
+      .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    }
+    
+    .carousel-container {
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+  }
+  
+  // Tablet adjustments
+  @media (min-width: 640px) and (max-width: 1023px) {
+    .member-card {
+      .line-clamp-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    }
+  }
+  
+  // Accessibility focus styles
+  button:focus-visible {
+    outline: 2px solid #4f46e5;
+    outline-offset: 2px;
+  }
+  
+  // Prevent layout shift when loading images
+  img {
+    width: auto;
+    height: auto;
+    max-width: 80%;
+    max-height: 80%;
+  }
+
+// Add these styles to ensure proper dot behavior
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+    
+    button {
+      width: 12px;
+      height: 12px;
+      border-radius: 6px;
+      background-color: #e5e7eb; // gray-300
+      margin: 0 4px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      
+      &.active {
+        width: 24px;
+        background-color: #4f46e5; // indigo-600
+      }
+      
+      &:focus {
+        outline: 2px solid #4f46e5;
+        outline-offset: 2px;
+      }
+    }
+  }

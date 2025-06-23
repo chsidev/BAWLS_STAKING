@@ -1,0 +1,28 @@
+<!-- parent.component.html -->
+@if (URL && URL.trim().length > 0) {
+    <a [href]="disabled ? null : URL" target="_blank" rel="noopener noreferrer" class="inline-block">
+        <app-wrapper
+            [type]="type"
+            [textToCopy]="textToCopy"
+            [placeholder]="placeholder"
+            [image]="image"
+            [styles]="styles"
+            [buttonText]="buttonText"
+            [disabled]="disabled"
+            [altInfo]="altInfo"
+            (clicked)="handleButtonClick($event)"
+        />
+    </a>
+} @else {
+    <app-wrapper
+        [type]="type"
+        [textToCopy]="textToCopy"
+        [placeholder]="placeholder"
+        [image]="image"
+        [styles]="styles"
+        [buttonText]="buttonText"
+        [disabled]="disabled"
+        [altInfo]="altInfo"
+        (clicked)="handleButtonClick($event)"
+    />
+}

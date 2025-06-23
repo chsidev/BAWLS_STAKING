@@ -1,0 +1,22 @@
+<div class="flex flex-col items-center max-w-xs h-fit mx-auto bg-white border border-gray-200 rounded-t-full rounded-b-lg overflow-hidden shadow-sm">
+    <!-- Logo/Image at top with rounded corners -->
+    <div class="w-full bg-blue-50 rounded-t-[40px] overflow-hidden">
+      <img 
+        [src]="imageUrl" 
+        [alt]="imageAlt" 
+        class="w-full h-full  p-4"
+        priority
+        loading="eager"
+      >
+    </div>
+    
+</div>
+
+ <!-- Content -->
+ <div class="p-6 text-center space-y-4">
+    <h2 class="text-2xl md:text-3xl text-subtitles text-[#256CB8]">{{ title }}</h2>
+    
+    <div class="text-black text-lg text-body-semibold leading-relaxed ">
+      {{ content }}
+    </div>
+  </div>

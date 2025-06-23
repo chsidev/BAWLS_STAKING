@@ -1,0 +1,105 @@
+<section id="tokenomics" class="bg-tokenomics w-full px-4 sm:px-6  ">
+    <div class="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto">
+      <!-- Left Section (Always visible) -->
+      <div class="flex-1 flex flex-col items-center gap-6">
+        <h2 class="text-white text-titles text-4xl sm:text-5xl lg:text-6xl whitespace-nowrap">
+          TOKENOMICS
+        </h2>
+  
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
+          <!-- Total Supply Card -->
+          <div class="bg-grid col-span-1 sm:col-span-2 bg-white/10 rounded-xl border-2 border-white text-white p-4 flex flex-col items-center gap-3">
+            <h1 class="text-4xl sm:text-5xl text-body-bold tracking-wide">
+              {{ (totalBawls) | number : "1.2-2" }}
+            </h1>
+            <span class="text-xl text-body-bold sm:text-2xl tracking-wider text-center">
+              TOTAL $BAWLS SUPPLY
+            </span>
+            <span class="px-4 py-2 text-body-bold bg-white/30 rounded-full text-sm sm:text-base tracking-wider">
+              CURRENT SUPPLY 
+            </span>
+          </div>
+  
+          <!-- Community Bank Card -->
+          <div class="bg-grid col-span-1 sm:col-span-2 bg-white/10 rounded-xl border-2 border-white text-white p-4 flex flex-col items-center gap-3">
+            <h3 class="text-xl sm:text-2xl text-body-bold tracking-wider text-center">
+              BAWLS COMMUNITY BANK (BCB)
+            </h3>
+            <div class="flex flex-row gap-2 items-center justify-center w-full">
+              <span class="px-4 py-2 flex items-center gap-2 tracking-widest bg-white/30 rounded-full text-sm sm:text-base w-full sm:w-auto justify-center">
+                <img class="h-6 sm:h-8" src="assets/imgs/icon.svg" alt="BAWLS icon" loading="eager">
+                <span class="truncate text-body max-w-[180px] sm:max-w-none">{{ bawlsAddressBank }}</span>
+              </span>
+
+              <app-button
+                type="clipboard"
+                [textToCopy]="bawlsAddressBank"
+                class=" sm:w-auto mt-2"
+              />
+            </div>
+          </div>
+
+          
+  
+          <!-- Purchase Cards -->
+          <a href="https://swap.pump.fun/?input=So11111111111111111111111111111111111111112&output=GAFQP8vSdDsHcjbBapN794CNEp5Wo6scqSDMSzDHpump" target="_blank" rel="noopener noreferrer">
+            <div class="bg-grid rounded-xl border-2 border-white text-white p-4 flex flex-col items-center gap-3">
+              <h3 class="text-lg sm:text-xl text-body-bold  tracking-wider text-center">
+                PURCHASE THROUGH
+              </h3>
+              <div class="flex flex-col sm:flex-row gap-2 items-center">
+                <img class="w-10 h-10 sm:w-12 sm:h-12" src="assets/imgs/solana.svg" alt="Solana logo" priority>
+                <p class="text-xl sm:text-2xl text-body-bold  tracking-wider">
+                  SOLANA
+                </p>
+              </div>
+            </div>
+          </a>
+
+          <a href="https://app.vapordex.io/swap?inputCurrency=&outputCurrency=0x2dA8312e2C08B79104c6B18bA26Bc7065ABEC704" target="_blank" rel="noopener noreferrer">
+            <div class="bg-grid rounded-xl border-2 border-white text-white p-4 flex flex-col items-center gap-3">
+              <h3 class="text-lg sm:text-xl text-body-bold  tracking-wider text-center">
+                PURCHASE TOO ON
+              </h3>
+              <div class="flex flex-col sm:flex-row gap-2 items-center">
+                <img class="w-10 h-10 sm:w-12 sm:h-12" src="assets/imgs/avalanche.svg" alt="Avalanche logo">
+                <p class="text-xl sm:text-2xl text-body-bold  tracking-wider">
+                  AVALANCHE
+                </p>
+              </div>
+            </div>
+          </a>
+  
+          <!-- Address Copy Buttons -->
+          <div class="sm:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="bg-grid border-2 border-white text-white rounded-full p-2 flex items-center justify-center gap-2 w-full">
+              <p class="text-sm sm:text-base lg:text-xl text-body-bold tracking-wider truncate">
+                COPY SOLANA ADDRESS
+              </p>
+              <app-button
+                type="clipboard"
+                styles="!p-2 min-w-[40px] mt-2"
+                [textToCopy]="solanaBawlsAddress"
+              />
+            </div>
+            
+            <div class="bg-grid border-2 border-white text-white rounded-full p-2 flex items-center justify-center gap-2 w-full">
+              <p class="text-sm sm:text-base lg:text-xl text-body-bold tracking-wider truncate">
+                COPY AVAX ADDRESS
+              </p>
+              <app-button
+                type="clipboard"
+                styles="!p-2 min-w-[40px] mt-2"
+                [textToCopy]="avaxBawlsAddress"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Right Section (Hidden on mobile/tablet) -->
+      <div class="hidden lg:flex items-center justify-center flex-1 max-w-[500px]">
+        <img class="w-full h-auto object-contain" src="assets/imgs/meme_money.webp" alt="Meme money" loading="lazy">
+      </div>
+    </div>
+</section>

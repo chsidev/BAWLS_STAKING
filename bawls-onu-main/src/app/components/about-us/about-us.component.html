@@ -1,0 +1,38 @@
+<section id="about" class="about-container">
+    @if (showLeftSection) {
+        <div class="left-section" >
+            <img class="md:pt-20 pt-10" src="assets/imgs/meme_rocket.webp" alt="Character Rocket" priority/>
+        </div>
+    }
+    <div class="right-section">
+      <div class="right-bg"></div> 
+      <div class="right-content">
+        <div class="flex flex-col items-center md:gap-4 gap-2">
+            <h2 class="text-titles text-6xl whitespace-nowrap">ABOUT BAWLS</h2>
+            <div class="">
+                <p class="text-body font-bold text-center">
+                    BAWLS ONU exists to connect the world through a shared interest in humor and mobilize communities to achieve social impact.
+                    We leverage the power of funny narratives to draw attention, then redirect that attention towards social impact.
+                </p>
+    
+                <p class="text-body font-bold text-center mb-4">
+                    BAWLS stands for Bravery, Awareness, Wellness, Laughter, Social Good. When communities form around a common idea the potential is limitless.
+                </p>
+            </div>  
+           
+
+            <app-button 
+                URL="https://swap.pump.fun/?input=So11111111111111111111111111111111111111112&output=GAFQP8vSdDsHcjbBapN794CNEp5Wo6scqSDMSzDHpump" 
+                placeholder="Get some $Bawls!" 
+                type="actions" 
+                styles="tracking-widest text-body-semibold uppercase leading-6 bg-opacity-70"
+            />
+            
+            @if (!showLeftSection) {
+                <img class="responsive-rocket" src="assets/imgs/meme_rocket.webp" alt="Character Rocket" />
+            }
+
+        </div>
+      </div>
+    </div>
+</section>
