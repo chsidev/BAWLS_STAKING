@@ -7,7 +7,7 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { errorInterceptor } from './interceptors/error.interceptor';
 import { IMAGE_CONFIG } from '@angular/common';
 import { provideToastr, ToastrModule } from 'ngx-toastr';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,12 +21,14 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([errorInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes, withViewTransitions()), 
+    provideAnimations(),
     provideAnimationsAsync(),
     provideToastr({
-      positionClass: 'toast-top-right',
-      timeOut: 3000,
-      progressBar: true,
+      positionClass: 'toast-top-center',
+      timeOut: 1000,
+      // progressBar: true,
       closeButton: true,
+      preventDuplicates: true,
       toastClass: 'ngx-toastr custom-toast',
     }),
   ]

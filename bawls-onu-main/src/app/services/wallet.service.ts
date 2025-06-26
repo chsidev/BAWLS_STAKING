@@ -31,6 +31,7 @@ export class WalletService {
             ? window.solana.signAllTransactions.bind(window.solana)
             : async (txs: Transaction[]) =>
                 Promise.all(txs.map(window.solana.signTransaction.bind(window.solana))),
+          payer: window.solana,
         };
 
         return wallet;

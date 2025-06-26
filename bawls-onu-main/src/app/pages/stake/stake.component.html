@@ -4,23 +4,34 @@
     <p class="subtitle">Stake your $BAWLS to earn rewards 💧</p>
 
     <div class="input-section">
+
       <label for="stakeAmount">Amount to Stake</label>
       <input id="stakeAmount" type="number" [(ngModel)]="stakeAmount" placeholder="0.0" />
 
-      <button (click)="stake()" class="btn-stake">STAKE</button>
-      <button (click)="unstake()" class="btn-unstake">UNSTAKE</button>
-      <button (click)="claim()" class="btn-claim">CLAIM REWARDS</button>
+      <button (click)="stake()" class="btn-stake" [disabled]="!walletAddress || stakeAmount <= 0">STAKE</button>
+      <button (click)="unstake()" class="btn-unstake" [disabled]="!walletAddress || userStake <= 0">UNSTAKE</button>
+      <button (click)="claim()" class="btn-claim" [disabled]="!walletAddress || rewards <= 0">CLAIM REWARDS</button>
     </div>
 
     <div class="info-box">
-      <p><strong>Staked:</strong> {{ userStake }} $BAWLS</p>
-      <p><strong>Rewards:</strong> {{ rewards }} $BAWLS</p>
+      <div class="info-grid">
+        <div class="info-row"><span>📦 Staked:</span><span>{{ userStake }} $BAWLS</span></div>
+        <div class="info-row rewards" [class.pulse]="rewardChanged"><span>💧 Rewards:</span><span>{{ rewards.toFixed(4) }} $BAWLS</span></div>
+        <div class="info-row"><span>🎖 Status:</span><span>{{ badgeLevel }}</span></div>
+      </div>
+      <div class="info-row" *ngIf="daysStaked < 90"><span>⛔ Unstaking will cost a 5% tax</span></div>
+      <div class="info-row" *ngIf="daysStaked >= 90"><span>✅ No tax on unstaking!</span></div>
+      <div class="info-row" [class.urgent]="isCountdownUrgent"><span>{{ countdown }}</span></div>
     </div>
   </div>
 
-  <div class="right-panel">
-    <!-- <img src="https://bawls-onu.s3.us-east-2.amazonaws.com/media/media/bawls.png" alt="BAWLS logo" /> -->
+  <div class="right-panel" *ngIf="!isMobile || showLeaderboard">
+     <app-leaderboard></app-leaderboard>
   </div>
+
+  <button *ngIf="isMobile" class="leaderboard-toggle" (click)="toggleLeaderboard()">
+    {{ showLeaderboard ? 'Hide' : 'Show' }} Leaderboard 🏆
+  </button>
 
   <div class="wallet-button-container">
     <ng-container *ngIf="walletAddress; else connectBlock">
