@@ -1,39 +1,31 @@
 <div class="staking-container">
-  <div class="left-panel">
-    <h1 class="title">$BAWLS STAKING</h1>
-    <p class="subtitle">Stake your $BAWLS to earn rewards 💧</p>
+  <app-stake-info class="stake-info-panel flex-1" 
+    [walletAddress]="walletAddress"
+    [stakeAmount]="stakeAmount"
+    [userStake]="userStake"
+    [rewards]="rewards"
+    [badgeLevel]="badgeLevel"
+    [rewardChanged]="rewardChanged"
+    [daysStaked]="daysStaked"
+    [countdown]="countdown"
+    [isCountdownUrgent]="isCountdownUrgent"
+    [stake]="stake"
+    [unstake]="unstake"
+    [claim]="claim"
+    [connectWallet]="connectWallet"
+    [disconnectWallet]="disconnectWallet"
+  ></app-stake-info>
 
-    <div class="input-section">
-
-      <label for="stakeAmount">Amount to Stake</label>
-      <input id="stakeAmount" type="number" [(ngModel)]="stakeAmount" placeholder="0.0" />
-
-      <button (click)="stake()" class="btn-stake" [disabled]="!walletAddress || stakeAmount <= 0">STAKE</button>
-      <button (click)="unstake()" class="btn-unstake" [disabled]="!walletAddress || userStake <= 0">UNSTAKE</button>
-      <button (click)="claim()" class="btn-claim" [disabled]="!walletAddress || rewards <= 0">CLAIM REWARDS</button>
-    </div>
-
-    <div class="info-box">
-      <div class="info-grid">
-        <div class="info-row"><span>📦 Staked:</span><span>{{ userStake }} $BAWLS</span></div>
-        <div class="info-row rewards" [class.pulse]="rewardChanged"><span>💧 Rewards:</span><span>{{ rewards.toFixed(4) }} $BAWLS</span></div>
-        <div class="info-row"><span>🎖 Status:</span><span>{{ badgeLevel }}</span></div>
-      </div>
-      <div class="info-row" *ngIf="daysStaked < 90"><span>⛔ Unstaking will cost a 5% tax</span></div>
-      <div class="info-row" *ngIf="daysStaked >= 90"><span>✅ No tax on unstaking!</span></div>
-      <div class="info-row" [class.urgent]="isCountdownUrgent"><span>{{ countdown }}</span></div>
-    </div>
-  </div>
-
-  <div class="right-panel" *ngIf="!isMobile || showLeaderboard">
+  <div class="right-section" *ngIf="!isMobile || showLeaderboard">
      <app-leaderboard></app-leaderboard>
+     <app-history></app-history>
   </div>
 
   <button *ngIf="isMobile" class="leaderboard-toggle" (click)="toggleLeaderboard()">
     {{ showLeaderboard ? 'Hide' : 'Show' }} Leaderboard 🏆
   </button>
 
-  <div class="wallet-button-container">
+  <!-- <div class="wallet-button-container">
     <ng-container *ngIf="walletAddress; else connectBlock">
       <button class="wallet-address-btn" (click)="disconnectWallet()">
         <img src="assets/imgs/wallet-connect.png" alt="Connect Wallet" class="phantom-icon" />
@@ -47,6 +39,6 @@
         Connect Wallet
       </button>
     </ng-template>
-  </div>
+  </div> -->
 
 </div>

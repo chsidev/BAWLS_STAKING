@@ -4,6 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { WalletService } from '../../services/wallet.service';
 import { AnchorService } from '../../services/anchor.service';
+import { HistoryComponent } from '../history/history.component';
+import { StakeInfoComponent } from '../stake-info/stake-info.component';
 import { LeaderboardComponent } from '../leaderboard/leaderboard.component';
 // @ts-ignore
 import { BN } from 'bn.js';
@@ -11,7 +13,7 @@ import { BN } from 'bn.js';
 @Component({
   selector: 'app-stake',
   standalone: true,
-  imports: [FormsModule, CommonModule, LeaderboardComponent],
+  imports: [FormsModule, CommonModule, LeaderboardComponent, HistoryComponent, StakeInfoComponent],
   templateUrl: './stake.component.html',
   styleUrl: './stake.component.scss',
 })
@@ -20,7 +22,13 @@ export class StakeComponent {
     private walletService: WalletService,
     private anchorService: AnchorService,
     private toastr: ToastrService
-  ) {}
+  ) {
+    this.stake = this.stake.bind(this);
+    this.unstake = this.unstake.bind(this);
+    this.claim = this.claim.bind(this);
+    this.connectWallet = this.connectWallet.bind(this);
+    this.disconnectWallet = this.disconnectWallet.bind(this);
+  }
 
   private countdownInterval: any = null;
   walletAddress: string | null = null;

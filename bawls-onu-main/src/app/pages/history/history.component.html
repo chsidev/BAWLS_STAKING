@@ -1,0 +1,25 @@
+<div class="history-card">
+  <h3>📜 User History</h3>
+  <div class="scroll-area">
+    <table>
+      <thead>
+        <tr>
+          <th (click)="sortBy('type')">Type ⬍</th>
+          <th (click)="sortBy('amount')">Amount ⬍</th>
+          <th (click)="sortBy('timestamp')">Timeline ⬍</th>
+          <th>TxHash</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let entry of sortedHistory" class="hover:bg-gray-50 border-b">
+          <td>{{ entry.type }}</td>
+          <td>{{ entry.amount | number }}</td>
+          <td>{{ entry.timestamp | date:'short' }}</td>
+          <td class="truncate" (click)="copyHash(entry.txhash)">
+            {{ truncate(entry.txhash) }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

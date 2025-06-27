@@ -5,7 +5,7 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   width: 100%;
   max-width: 700px;
-  max-height: 85vh;
+  max-height: 90vh;
   animation: fadeIn 0.4s ease-out;
   color: #222;
   display: flex;
@@ -21,6 +21,7 @@
   }
 
   .scroll-area {
+    flex: 1;
     overflow-x: hidden;
     overflow-y: auto;
     max-height: 85vh;
