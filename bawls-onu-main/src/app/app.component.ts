@@ -20,10 +20,8 @@ export class AppComponent implements OnInit {
       if (event instanceof NavigationEnd) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         
-        // Clear previous route classes
         document.body.classList.remove('home-route', 'rwi-route');
         
-        // Add class based on current route
         if (event.urlAfterRedirects === '/') {
           document.body.classList.add('home-route');
         } else if (event.urlAfterRedirects.startsWith('/rwi')) {

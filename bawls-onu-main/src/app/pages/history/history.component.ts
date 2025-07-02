@@ -1,33 +1,86 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-
-type HistoryEntry = {
-  type: 'Staked' | 'Unstaked' | 'Claimed';
-  amount: number;
-  timestamp: Date;
-  txhash: string;
-};
+import { ApiService, HistoryEntry } from '../../services/api.service';
 
 @Component({
   selector: 'app-history',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './history.component.html',
-  styleUrl: './history.component.scss'
+  styleUrls: ['./history.component.scss']
 })
 export class HistoryComponent {
+  /** Wallet address to load history for */
+  @Input() walletAddress: string | null = null;
+
+  history: HistoryEntry[] = [];
+  loading = false;
+  error = '';
+
   sortColumn: keyof HistoryEntry = 'timestamp';
   sortAsc = false;
 
-  constructor( private toastr: ToastrService ) {}
+  constructor( 
+    private api: ApiService,
+    private toastr: ToastrService 
+  ) {}
 
-  history: HistoryEntry[] = Array.from({ length: 20 }).map((_, i) => ({
-    type: ['Staked', 'Unstaked', 'Claimed'][Math.floor(Math.random() * 3)] as any,
-    amount: Math.floor(Math.random() * 50000 + 1000),
-    timestamp: new Date(Date.now() - Math.random() * 1e10),
-    txhash: crypto.randomUUID().replace(/-/g, '').slice(0, 32),
-  }));
+  /** Called once after component is created */
+  ngOnInit() {
+    if (this.walletAddress) {
+      console.log('[HistoryComponent] ngOnInit detected walletAddress:', this.walletAddress);
+      this.loadHistory(this.walletAddress);
+    }
+  }
+
+  /** Called whenever an @Input changes */
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['walletAddress'] && this.walletAddress) {
+      console.log('[HistoryComponent] ngOnChanges detected walletAddress change:', this.walletAddress);
+      this.loadHistory(this.walletAddress);
+    }
+  }
+
+  /** Fetch history data from API */
+  
+  loadHistory(wallet: string) {
+    if (!wallet) {
+      this.error = 'No wallet address provided';
+      return;
+    }
+    
+    console.log('[HistoryComponent] loadHistory called with wallet:', wallet);
+
+    this.loading = true;
+    this.error = '';
+
+    this.api.getUserHistory(wallet).subscribe({
+      next: (data) => {
+        this.history = data.map(entry => ({
+          ...entry,
+          timestamp: new Date(entry.timestamp),
+          displayType: entry.type.charAt(0).toUpperCase() + entry.type.slice(1) 
+        }));
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.error = 'Failed to load history';
+        this.loading = false;
+        this.toastr.error('Could not load history from server');
+      }
+    });
+  }
+
+  public refresh() {
+    if (this.walletAddress) {
+      console.log('[HistoryComponent] refresh called for wallet:', this.walletAddress);
+      this.loadHistory(this.walletAddress);
+    } else {
+      console.warn('[HistoryComponent] refresh called but no wallet address set');
+    }
+  } 
 
   sortBy(column: keyof HistoryEntry) {
     if (this.sortColumn === column) {
@@ -42,6 +95,11 @@ export class HistoryComponent {
     return [...this.history].sort((a, b) => {
       const valA = a[this.sortColumn];
       const valB = b[this.sortColumn];
+        
+      if (valA == null && valB == null) return 0;
+      if (valA == null) return 1;
+      if (valB == null) return -1;
+
       return this.sortAsc
         ? valA > valB ? 1 : -1
         : valA < valB ? 1 : -1;

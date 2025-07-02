@@ -1,7 +1,8 @@
 <div class="staking-container">
   <app-stake-info class="stake-info-panel flex-1" 
+    [(stakeAmount)]="stakeAmount"
+
     [walletAddress]="walletAddress"
-    [stakeAmount]="stakeAmount"
     [userStake]="userStake"
     [rewards]="rewards"
     [badgeLevel]="badgeLevel"
@@ -9,36 +10,22 @@
     [daysStaked]="daysStaked"
     [countdown]="countdown"
     [isCountdownUrgent]="isCountdownUrgent"
-    [stake]="stake"
-    [unstake]="unstake"
-    [claim]="claim"
-    [connectWallet]="connectWallet"
-    [disconnectWallet]="disconnectWallet"
+    [showLeaderboard]="showLeaderboard"
+
+    (stakeClicked)="stake()"
+    (unstakeClicked)="unstake()"
+    (claimClicked)="claim()"
+    (connectWalletClicked)="connectWallet()"
+    (disconnectWalletClicked)="disconnectWallet()"
+    (toggleLeaderboardClicked)="toggleLeaderboard()"
   ></app-stake-info>
 
   <div class="right-section" *ngIf="!isMobile || showLeaderboard">
-     <app-leaderboard></app-leaderboard>
-     <app-history></app-history>
+     <app-leaderboard [currentUserWallet]="walletAddress"></app-leaderboard>
+     <app-history [walletAddress]="walletAddress"></app-history>
   </div>
 
   <button *ngIf="isMobile" class="leaderboard-toggle" (click)="toggleLeaderboard()">
     {{ showLeaderboard ? 'Hide' : 'Show' }} Leaderboard 🏆
   </button>
-
-  <!-- <div class="wallet-button-container">
-    <ng-container *ngIf="walletAddress; else connectBlock">
-      <button class="wallet-address-btn" (click)="disconnectWallet()">
-        <img src="assets/imgs/wallet-connect.png" alt="Connect Wallet" class="phantom-icon" />
-        {{ walletAddress | slice:0:6 }}...{{ walletAddress | slice:-4 }}
-      </button>
-    </ng-container>
-
-    <ng-template #connectBlock>
-      <button class="wallet-connect-btn" (click)="connectWallet()">
-        <img src="assets/imgs/wallet-connect.png" alt="Connect Wallet" class="phantom-icon" />
-        Connect Wallet
-      </button>
-    </ng-template>
-  </div> -->
-
 </div>

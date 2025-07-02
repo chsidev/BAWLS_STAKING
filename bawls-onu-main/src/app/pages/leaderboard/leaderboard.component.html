@@ -8,17 +8,17 @@
           <th (click)="sortBy('rank')"># <span class="arrow">{{ sortColumn === 'rank' ? (sortAsc ? '▲' : '▼') : '' }}</span></th>
           <th (click)="sortBy('wallet')">Wallet <span class="arrow">{{ sortColumn === 'wallet' ? (sortAsc ? '▲' : '▼') : '' }}</span></th>
           <th (click)="sortBy('amount')">Staked <span class="arrow">{{ sortColumn === 'amount' ? (sortAsc ? '▲' : '▼') : '' }}</span></th>
-          <th (click)="sortBy('days')">Days <span class="arrow">{{ sortColumn === 'days' ? (sortAsc ? '▲' : '▼') : '' }}</span></th>
+          <th (click)="sortBy('daysStaked')">Days <span class="arrow">{{ sortColumn === 'daysStaked' ? (sortAsc ? '▲' : '▼') : '' }}</span></th>
           <th>Status</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let user of sortedLeaderboard" [class.highlight]="isCurrentUser(user.wallet)">
           <td>{{ user.rank }}</td>
-          <td class="wallet" (click) = "copyAddress(user.wallet)">{{ truncate(user.wallet) }}</td>
+          <td class="wallet" (click) = "copyAddress(user.wallet)">{{ truncate(user.wallet) }} <span *ngIf="isCurrentUser(user.wallet)">⭐</span></td>
           <td>{{ user.amount | number }}</td>
-          <td>{{ user.days }}</td>
-          <td>{{ user.status }}</td>
+          <td>{{ user.daysStaked }}</td>
+          <td>{{ user.badge }}</td>
         </tr>
       </tbody>
     </table>

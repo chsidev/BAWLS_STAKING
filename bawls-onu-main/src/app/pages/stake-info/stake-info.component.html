@@ -6,18 +6,21 @@
   <input
     id="amount"
     type="number"
-    [(ngModel)]="stakeAmount"
+    [ngModel]="stakeAmount"
+    (ngModelChange)="stakeAmountChange.emit($event)"
     placeholder="0.0"
     class="amount-input"
   />
 
-  <button (click)="stake()" [disabled]="!walletAddress || stakeAmount <= 0" class="action-btn">STAKE</button>
-  <button (click)="unstake()" [disabled]="!walletAddress || userStake <= 0" class="action-btn">UNSTAKE</button>
-  <button (click)="claim()" [disabled]="!walletAddress || rewards <= 0" class="action-btn">CLAIM REWARDS</button>
+  <button (click)="stakeClicked.emit()" [disabled]="!walletAddress || stakeAmount <= 0" class="action-btn">STAKE</button>
+  <button (click)="unstakeClicked.emit()" [disabled]="!walletAddress || userStake <= 0" class="action-btn">UNSTAKE</button>
+  <button (click)="claimClicked.emit()" [disabled]="!walletAddress || rewards <= 0" class="action-btn">CLAIM REWARDS</button>
 
   <div class="info-block">
     <div><span>Staked:</span> {{ userStake | number }} $BAWLS</div>
-    <div class="rewards" [class.pulse]="rewardChanged"><span>Rewards:</span> {{ rewards.toFixed(4) | number }} $BAWLS</div>
+    <div class="rewards" [class.pulse]="rewardChanged">
+      <span>Rewards:</span> {{ rewards }} $BAWLS
+    </div>
     <div><span>Status:</span> {{ badgeLevel }}</div>    
     <div *ngIf="userStake>0">
       <div *ngIf="isCountdownUrgent" class="urgent">{{ countdown }}</div>
@@ -28,12 +31,12 @@
 
   <div class="wallet-button-container">
     <ng-container *ngIf="walletAddress; else connectBlock">
-      <button class="wallet-btn" (click)="disconnectWallet()">
+      <button class="wallet-btn" (click)="disconnectWalletClicked.emit()">
         {{ walletAddress | slice:0:6 }}...{{ walletAddress | slice:-4 }}
       </button>
     </ng-container>
     <ng-template #connectBlock>
-      <button class="wallet-btn" (click)="connectWallet()">
+      <button class="wallet-btn" (click)="connectWalletClicked.emit()">
         <img src="assets/imgs/wallet-connect.png" alt="Connect Wallet" class="phantom-icon" />
         Connect Wallet
       </button>

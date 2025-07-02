@@ -24,17 +24,17 @@ export class WalletService {
 
         this.toast.success('Connected successfully!', 'Success');
         
-        const wallet = {
-          publicKey: this.publicKey,
-          signTransaction: window.solana.signTransaction.bind(window.solana),
-          signAllTransactions: window.solana.signAllTransactions
-            ? window.solana.signAllTransactions.bind(window.solana)
-            : async (txs: Transaction[]) =>
-                Promise.all(txs.map(window.solana.signTransaction.bind(window.solana))),
-          payer: window.solana,
-        };
+        // const wallet = {
+        //   publicKey: this.publicKey,
+        //   signTransaction: window.solana.signTransaction.bind(window.solana),
+        //   signAllTransactions: window.solana.signAllTransactions
+        //     ? window.solana.signAllTransactions.bind(window.solana)
+        //     : async (txs: Transaction[]) =>
+        //         Promise.all(txs.map(window.solana.signTransaction.bind(window.solana))),
+        //   payer: window.solana,
+        // };
 
-        return wallet;
+        return resp;
       } catch (err) {
         this.toast.error('Failed to connect wallet. Please try again.', 'Error');
         return null;

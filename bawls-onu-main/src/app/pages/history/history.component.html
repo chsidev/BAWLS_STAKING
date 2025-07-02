@@ -1,6 +1,15 @@
 <div class="history-card">
   <h3>📜 User History</h3>
-  <div class="scroll-area">
+
+  <div *ngIf="loading" class="loading">
+    <p>Loading history...</p>
+  </div>
+
+  <div *ngIf="error" class="error">
+    <p>Error loading history: {{ error }}</p>
+  </div>
+
+  <div class="scroll-area" *ngIf="!loading && !error && sortedHistory.length">
     <table>
       <thead>
         <tr>
@@ -12,14 +21,18 @@
       </thead>
       <tbody>
         <tr *ngFor="let entry of sortedHistory" class="hover:bg-gray-50 border-b">
-          <td>{{ entry.type }}</td>
+          <td>{{ entry.displayType }}</td>
           <td>{{ entry.amount | number }}</td>
           <td>{{ entry.timestamp | date:'short' }}</td>
-          <td class="truncate" (click)="copyHash(entry.txhash)">
-            {{ truncate(entry.txhash) }}
+          <td class="truncate" (click)="copyHash(entry.txHash)">
+            {{ truncate(entry.txHash) }}
           </td>
         </tr>
       </tbody>
     </table>
+  </div>
+
+  <div *ngIf="!loading && !error && sortedHistory.length === 0" class="no-data">
+    No history found.
   </div>
 </div>

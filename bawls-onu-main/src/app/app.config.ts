@@ -26,7 +26,6 @@ export const appConfig: ApplicationConfig = {
     provideToastr({
       positionClass: 'toast-top-center',
       timeOut: 1000,
-      // progressBar: true,
       closeButton: true,
       preventDuplicates: true,
       toastClass: 'ngx-toastr custom-toast',

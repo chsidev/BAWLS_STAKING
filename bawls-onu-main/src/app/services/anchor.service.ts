@@ -120,8 +120,15 @@ export class AnchorService {
       return 0;
     }
 
-    const reward = Math.floor((stakeAmount.mul(newRewards)).div(totalStaked).toNumber());
-    return reward / 1e9;
+    const rewardBN = stakeAmount.mul(newRewards).div(totalStaked);
+    const reward = rewardBN.div(new BN(1e9));
+
+    if (reward.gt(new BN(Number.MAX_SAFE_INTEGER))) {
+      console.warn('Reward too big to safely convert to number:', reward.toString());
+      return 0;
+    }
+
+    return reward.toNumber();
   }
 
   async stake(user: string, amount: number) {
@@ -143,6 +150,7 @@ export class AnchorService {
       .rpc();
 
     console.log('Stake tx:', tx);
+    return tx;
   }
 
   async unstake(user: string) {
@@ -166,6 +174,7 @@ export class AnchorService {
       .rpc();
 
     console.log(' Unstake tx:', tx);
+    return tx;
   }
 
   async claimRewards(user: string) {
@@ -187,5 +196,6 @@ export class AnchorService {
       .rpc();
 
     console.log('Claim tx:', tx);
+    return tx;
   }
 }

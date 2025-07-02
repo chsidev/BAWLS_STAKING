@@ -1,12 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { WalletService } from '../../services/wallet.service';
 import { AnchorService } from '../../services/anchor.service';
 import { HistoryComponent } from '../history/history.component';
 import { StakeInfoComponent } from '../stake-info/stake-info.component';
 import { LeaderboardComponent } from '../leaderboard/leaderboard.component';
+import { environment } from '../../../environments/environment.development';
 // @ts-ignore
 import { BN } from 'bn.js';
 
@@ -21,14 +23,12 @@ export class StakeComponent {
   constructor(
     private walletService: WalletService,
     private anchorService: AnchorService,
+    private http: HttpClient,
     private toastr: ToastrService
-  ) {
-    this.stake = this.stake.bind(this);
-    this.unstake = this.unstake.bind(this);
-    this.claim = this.claim.bind(this);
-    this.connectWallet = this.connectWallet.bind(this);
-    this.disconnectWallet = this.disconnectWallet.bind(this);
-  }
+  ) {}
+
+  @ViewChild(LeaderboardComponent) leaderboardComponent!: LeaderboardComponent;
+  @ViewChild(HistoryComponent) historyComponent!: HistoryComponent;
 
   private countdownInterval: any = null;
   walletAddress: string | null = null;
@@ -48,9 +48,11 @@ export class StakeComponent {
       this.isMobile = window.innerWidth <= 768;
     });
 
-    const connected = await this.walletService.connectWallet(); 
-    if (connected) {
-      this.walletAddress = this.walletService.publicKey?.toBase58() ?? null;      
+    const response = await this.walletService.connectWallet(); 
+    if (response && response.publicKey) {
+      this.walletAddress = response.publicKey.toBase58().trim();
+      console.log('ngOnInit detected walletAddress:', this.walletAddress);
+
       await this.anchorService.init(window.solana);
       await this.refreshUserState();
     }
@@ -61,12 +63,22 @@ export class StakeComponent {
   }
 
   async connectWallet() {
-    const wallet = await this.walletService.connectWallet();
-    if (wallet) {
-      this.walletAddress = this.walletService.publicKey?.toBase58() ?? null;
-      await this.anchorService.init(wallet);
-      await this.refreshUserState();
-    } 
+    try {
+      const response = await this.walletService.connectWallet();
+
+      if (response && response.publicKey) {
+        this.walletAddress = response.publicKey.toBase58().trim();
+        console.log('Connected walletAddress:', this.walletAddress);
+
+        await this.anchorService.init(window.solana);
+        await this.refreshUserState();
+      } else {
+        this.toastr.error('Wallet connection failed');
+      }
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
+      this.toastr.error('Error connecting wallet');
+    }
   }
   
   disconnectWallet(): void {
@@ -107,7 +119,14 @@ export class StakeComponent {
   async stake() {
     if (!this.walletAddress || this.stakeAmount <= 0) return;
     await this.anchorService.ensureUserAccount(this.walletAddress);
-    await this.anchorService.stake(this.walletAddress, this.stakeAmount);
+    const txHash = await this.anchorService.stake(this.walletAddress, this.stakeAmount);
+    await this.logHistory('stake', this.stakeAmount, txHash);
+    if (this.historyComponent) {
+      this.historyComponent.refresh();
+    }
+    if (this.leaderboardComponent) {
+      this.leaderboardComponent.refresh();
+    }
     await this.refreshUserState();
     this.toastr.success('Staked successfully!');
   }
@@ -115,7 +134,14 @@ export class StakeComponent {
   async unstake() {
     if (!this.walletAddress || this.userStake <= 0) return;
     await this.anchorService.ensureUserAccount(this.walletAddress);
-    await this.anchorService.unstake(this.walletAddress);
+    const txHash = await this.anchorService.unstake(this.walletAddress);
+    await this.logHistory('unstake', this.userStake, txHash);
+    if (this.historyComponent) {
+      this.historyComponent.refresh();
+    }
+    if (this.leaderboardComponent) {
+      this.leaderboardComponent.refresh();
+    }
     await this.refreshUserState();
     this.toastr.info('Unstaking initiated.');
   }
@@ -123,9 +149,30 @@ export class StakeComponent {
   async claim() {
     if (!this.walletAddress || this.rewards <= 0) return;
     await this.anchorService.ensureUserAccount(this.walletAddress);
-    await this.anchorService.claimRewards(this.walletAddress);
+    const txHash = await this.anchorService.claimRewards(this.walletAddress);
+    await this.logHistory('claim', this.rewards, txHash);
+    if (this.historyComponent) {
+      this.historyComponent.refresh();
+    }
+    if (this.leaderboardComponent) {
+      this.leaderboardComponent.refresh();
+    }
     await this.refreshUserState();
     this.toastr.success('Rewards claimed!');
+  }
+
+  async logHistory(type: 'stake' | 'unstake' | 'claim', amount: number, txHash: string) {
+    if (!this.walletAddress || !txHash) return;
+    try {
+      await this.http.post(`${environment.apiUrl}/history`, {
+        wallet: this.walletAddress,
+        type,
+        amount,
+        txHash
+      }).toPromise();
+    } catch (e) {
+      console.error('Failed to log history', e);
+    }
   }
 
   async refreshUserState() {

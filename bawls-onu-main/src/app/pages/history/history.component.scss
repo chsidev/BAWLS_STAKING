@@ -6,10 +6,10 @@
   height: 100%;
   max-height: 90vh;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-  color: #111827; // Tailwind gray-900
+  color: #111827; 
   display: flex;
   flex-direction: column;
-  font-size: 0.875rem; // text-sm
+  font-size: 0.875rem; 
 
   h3 {
     font-size: 1.125rem;
@@ -34,8 +34,8 @@
       position: sticky;
       top: 0;
       z-index: 10;
-      background-color: #f3f4f6; // Tailwind gray-100
-      color: #374151; // Tailwind gray-700
+      background-color: #f3f4f6; 
+      color: #374151; 
       font-weight: 600;
     }
 
@@ -50,15 +50,37 @@
     }
 
     tr:hover {
-      background-color: #f9fafb; // Tailwind gray-50
+      background-color: #f9fafb; 
     }
 
     .truncate {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      color: #3b82f6; // Tailwind blue-500
+      color: #3b82f6; 
       cursor: pointer;
     }
+
+    .hover\:bg-gray-50:hover {
+      background-color: #f9f9f9;
+    }
   }
+
+  .loading-message {
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.error-message {
+  color: red;
+  padding: 1rem;
+  text-align: center;
+}
+
+.no-data {
+  padding: 1rem;
+  text-align: center;
+  color: gray;
+}
 }
