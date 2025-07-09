@@ -1,0 +1,67 @@
+<div class="leaderboard-section">
+  <h2 class="section-title">Top Bawlers<img src="assets/imgs/trophy.png" /></h2>
+
+  <!-- Podium -->
+  <div class="podium">
+    <div class="place first" *ngIf="sortedLeaderboard[0] as first">
+      <div class="box">
+        <span class="rank">1</span>
+        <div class="title">{{ first.badge }}</div>
+        <div class="amount">{{ first.amount | number }}</div>
+      </div>
+      <div class="address" (click)="copyAddress(first.wallet)">
+        {{ truncate(first.wallet) }}
+      </div>
+    </div>
+    <div class="place second" *ngIf="sortedLeaderboard[1] as second">
+      <div class="box">
+        <span class="rank">2</span>
+        <div class="title">{{ second.badge }}</div>
+        <div class="amount">{{ second.amount | number }}</div>
+      </div>
+      <div class="address" (click)="copyAddress(second.wallet)">
+        {{ truncate(second.wallet) }}
+      </div>
+    </div>
+    <div class="place third" *ngIf="sortedLeaderboard[2] as third">
+      <div class="box">
+        <span class="rank">3</span>
+        <div class="title">{{ third.badge }}</div>
+        <div class="amount">{{ third.amount | number }}</div>
+      </div>
+      <div class="address" (click)="copyAddress(third.wallet)">
+        {{ truncate(third.wallet) }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaderboard Table -->
+  <div class="leaderboard-table">
+    <div class="table-header">
+      <span>Wallet</span>
+      <span>Staked</span>
+      <span>Days</span>
+      <span>Status</span>
+    </div>
+
+    <div
+      class="table-row"
+      *ngFor="let user of sortedLeaderboard.slice(3); let i = index"
+    >
+      <span class="number-badge">{{ i + 4 }}</span>
+      <span class="wallet" (click)="copyAddress(user.wallet)">
+        {{ truncate(user.wallet) }}
+      </span>
+      <span>{{ user.amount | number }}</span>
+      <span>{{ user.daysStaked }}</span>
+      <span>
+        <img
+          class="status-icon"
+          [src]="'assets/imgs/' + getBadgeIcon(user.badge)"
+          alt="badge"
+        />
+        {{ user.badge }}
+      </span>
+    </div>
+  </div>
+</div>

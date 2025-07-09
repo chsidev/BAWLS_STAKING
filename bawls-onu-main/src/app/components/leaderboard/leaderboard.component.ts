@@ -64,6 +64,23 @@ export class LeaderboardComponent implements OnInit {
     }
   }
 
+  getBadgeIcon(badge: string): string {
+    switch (badge.toLowerCase()) {
+      case 'baby bawler':
+        return 'baby-bawler.png';
+      case 'og bawler':
+        return 'og-bawler.png';
+      case 'diamond bawler':
+        return 'diamond-bawler.png';
+      case 'big bawler':
+        return 'big-bawler.png';
+      case 'bawler legend':
+        return 'legend-bawler.png';
+      default:
+        return 'baby-bawler.png';
+    }
+  }
+
   isCurrentUser(wallet: string): boolean {
     return this.currentUserWallet != null && wallet === this.currentUserWallet;
   }

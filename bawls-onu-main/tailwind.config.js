@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        gasoek: ['"Gasoek One"', 'sans-serif'],
+      },
       colors: {
         'blue-faq': '#44bff9',
         'blue-list': '#40c0fa',

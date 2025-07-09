@@ -11,7 +11,6 @@ import { ApiService, HistoryEntry } from '../../services/api.service';
   styleUrls: ['./history.component.scss']
 })
 export class HistoryComponent {
-  /** Wallet address to load history for */
   @Input() walletAddress: string | null = null;
 
   history: HistoryEntry[] = [];
@@ -26,7 +25,6 @@ export class HistoryComponent {
     private toastr: ToastrService 
   ) {}
 
-  /** Called once after component is created */
   ngOnInit() {
     if (this.walletAddress) {
       console.log('[HistoryComponent] ngOnInit detected walletAddress:', this.walletAddress);
@@ -34,7 +32,6 @@ export class HistoryComponent {
     }
   }
 
-  /** Called whenever an @Input changes */
   ngOnChanges(changes: SimpleChanges) {
     if (changes['walletAddress'] && this.walletAddress) {
       console.log('[HistoryComponent] ngOnChanges detected walletAddress change:', this.walletAddress);
@@ -42,7 +39,6 @@ export class HistoryComponent {
     }
   }
 
-  /** Fetch history data from API */
   
   loadHistory(wallet: string) {
     if (!wallet) {

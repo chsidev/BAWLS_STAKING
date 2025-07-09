@@ -3,11 +3,12 @@ import { ToastrService } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { NavbarComponent } from "../../components/navbar/navbar.component";
 import { WalletService } from '../../services/wallet.service';
 import { AnchorService } from '../../services/anchor.service';
-import { HistoryComponent } from '../history/history.component';
-import { StakeInfoComponent } from '../stake-info/stake-info.component';
-import { LeaderboardComponent } from '../leaderboard/leaderboard.component';
+import { HistoryComponent } from '../../components/history/history.component';
+import { StakeInfoComponent } from '../../components/stake-info/stake-info.component';
+import { LeaderboardComponent } from '../../components/leaderboard/leaderboard.component';
 import { environment } from '../../../environments/environment.development';
 // @ts-ignore
 import { BN } from 'bn.js';
@@ -15,7 +16,7 @@ import { BN } from 'bn.js';
 @Component({
   selector: 'app-stake',
   standalone: true,
-  imports: [FormsModule, CommonModule, LeaderboardComponent, HistoryComponent, StakeInfoComponent],
+  imports: [NavbarComponent, FormsModule, CommonModule, LeaderboardComponent, HistoryComponent, StakeInfoComponent],
   templateUrl: './stake.component.html',
   styleUrl: './stake.component.scss',
 })
@@ -29,6 +30,13 @@ export class StakeComponent {
 
   @ViewChild(LeaderboardComponent) leaderboardComponent!: LeaderboardComponent;
   @ViewChild(HistoryComponent) historyComponent!: HistoryComponent;
+  
+  public menuItems = [
+    { id: 'about', name: 'ABOUT US', isActive: false},
+    { id: 'tokenomics', name: 'TOKENOMICS', isActive: false},
+    { id: 'memes', name: 'MEMES', isActive: false},
+    { id: 'impact', name: 'IMPACT', isActive: false}
+  ]
 
   private countdownInterval: any = null;
   walletAddress: string | null = null;
@@ -112,7 +120,7 @@ export class StakeComponent {
       const minutes = Math.floor((remaining % 3600) / 60);
       const seconds = remaining % 60;
 
-      this.countdown = ` ⏱ Tax-free unstake in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+      this.countdown = `Tax-free unstake in: ${days}d ${hours}h ${minutes}m ${seconds}s`;
     }, 1000);
   }
 

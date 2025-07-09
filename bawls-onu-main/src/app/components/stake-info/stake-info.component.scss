@@ -1,0 +1,288 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700&display=swap');
+.stake-section-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding-top: 4rem;
+  position: relative;
+}
+
+.stake-inner-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 2rem;
+  max-width: none;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+  padding: 0 2rem;
+  & img {
+    max-width: 100%;
+    height: auto;
+    z-index: 1 !important;
+  }
+}
+
+
+.mascot-image {
+  height: 600px;
+  object-fit: contain;
+  transform: translate(-80px, 90px);
+  margin-left: -300px;
+  margin-bottom: -70px;
+  flex-shrink: 0;
+}
+
+.stake-info-card {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  background: #43c3ff;
+  border: 1px solid #000;
+  border-radius: 36px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: none;
+  width: 1000px;
+  max-width: 100%;
+}
+
+.subtitle {
+  font-size: 30px;
+  font-weight: 600;
+  text-align: center;
+  color: white;
+  margin-top: -20px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  img {
+    height: 30px;
+    margin-left: -10px;
+  }
+}
+
+.card-content {
+  display: flex;
+  justify-content: space-between;
+  align-items:stretch;
+  gap: 50px;
+  width: 100%;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 24px;
+  }
+}
+
+.details-column {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.amount-label {
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  color: white;
+}
+
+.amount-input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: white;
+    transition: width 0.3s ease;
+    transform: translateX(-50%);
+  }
+
+  .amount-input {
+    font-size: 40px;
+    background: transparent;
+    border: none;
+    text-align: center;
+    color: white;
+    outline: none;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+
+    &::placeholder {
+      color: #ffffffa0;
+    }
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus ~ .amount-input-wrapper::after {
+      width: 100%;
+    }
+  }
+
+  &:has(.amount-input:focus)::after {
+    width: 100%;
+  }
+}
+
+.badge {
+  background: linear-gradient(180deg, #ffafed 0%, #ff86c9 100%);
+  padding: 6px 14px;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  height: 25px;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1b002e;
+
+  img {
+    height: 18px;
+  }
+
+  strong {
+    margin-left: auto;
+    font-weight: 700;
+  }
+
+  transition: transform 0.2s ease;
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.tax-info {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 12px 16px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 14px;
+
+  > div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: white;
+  }
+
+  .urgent {
+    color: #ff3b3b;
+    font-weight: bold;
+  }
+
+  strong {
+    color: #ff3b3b;
+  }
+
+  img {
+    height: 16px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+}
+
+.wallet-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+
+  button {
+    background-color: black;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 18px;
+    font-size: 13px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    img {
+      height: 16px;
+    }
+  }
+}
+
+.buttons-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  min-width: 240px;
+  justify-content: center;
+  align-items: stretch;
+
+  button {
+    background: linear-gradient(180deg, #ffafed 0%, #ff86c9 100%);
+    color: white;
+    border: none;
+    border-radius: 32px;
+    padding: 20px 20px;
+    font-weight: bold;
+    font-size: 32px;
+    cursor: pointer;
+    width: 100%;
+    transition: transform 0.2s ease;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      transform: scale(1.03);
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .stake-inner-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .mascot-image {
+    height: 400px;
+    transform: translateY(0px);
+    margin-bottom: 0;
+  }
+
+  .stake-info-card {
+    width: 100%;
+  }
+
+  .buttons-column, .details-column {
+    width: 100%;
+    align-items: stretch;
+  }  
+}

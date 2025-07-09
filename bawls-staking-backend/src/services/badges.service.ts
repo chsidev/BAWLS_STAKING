@@ -7,11 +7,11 @@ export function computeDaysStaked(startTime: number): number {
 export function computeBadge(startTime: number): string {
   const days = computeDaysStaked(startTime);
 
-  if (days >= 120) return "💎 DIAMOND BAWLER";
-  if (days >= 90) return "🔥 BAWLER LEGEND";
-  if (days >= 60) return "💪 BIG BAWLER";
-  if (days >= 30) return "😎 OG BAWLER";
-  return "👶 BABY BAWLER";
+  if (days >= 120) return "DIAMOND BAWLER";
+  if (days >= 90) return "BAWLER LEGEND";
+  if (days >= 60) return "BIG BAWLER";
+  if (days >= 30) return "OG BAWLER";
+  return "BABY BAWLER";
 }
 
 import { fetchAllUserStakes } from './solana.service';

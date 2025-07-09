@@ -1,0 +1,76 @@
+<div class="stake-section-wrapper">
+  <div class="stake-inner-container">
+    <div class="stake-info-card">
+      <p class="subtitle">
+        Stake your $BAWLS to earn rewards
+        <img src="assets/imgs/droplet.png" />
+      </p>
+
+      <div class="card-content">
+        <div class="details-column">
+          <label for="amount" class="amount-label">Amount to Stake</label>
+          <div class="amount-input-wrapper">
+            <input
+              type="number"
+              [ngModel]="stakeAmount"
+              (ngModelChange)="stakeAmountChange.emit($event)"
+              placeholder="0"
+              class="amount-input"
+            />
+          </div>
+
+          <div class="badge staked">
+            <img src="assets/imgs/package.png" />
+            <span>Staked:</span>
+            <strong>{{ userStake | number }} $BAWLS</strong>
+          </div>
+          <div class="badge rewards" [class.pulse]="rewardChanged">
+            <img src="assets/imgs/droplet.png" />
+            <span>Rewards:</span>
+            <strong>{{ rewards }} $BAWLS</strong>
+          </div>
+          <div class="badge status">
+            <img src="assets/imgs/sports-medal.png" />
+            <span>Status:</span>
+            <strong>{{ badgeLevel }}</strong>
+          </div>
+
+          <div class="tax-info">
+            <div *ngIf="userStake > 0">
+              <img src="assets/imgs/stopwatch.png" />
+              <div [class.urgent]="isCountdownUrgent">{{ countdown }}</div>
+            </div>
+            <div *ngIf="daysStaked < 90">
+              <img src="assets/imgs/no-entry.png" />
+              <span>Unstaking will cost a 5% tax</span>
+            </div>
+            <div *ngIf="daysStaked >= 90">
+              <img src="assets/imgs/no-entry.png" />
+              <span>Unstaking will cost <strong>no</strong> tax</span>
+            </div>
+          </div>
+
+          <div class="wallet-button-container">
+            <ng-container *ngIf="walletAddress; else connectBlock">
+              <button (click)="disconnectWalletClicked.emit()">
+                {{ walletAddress | slice: 0:6 }}...{{ walletAddress | slice: -4 }}
+              </button>
+            </ng-container>
+            <ng-template #connectBlock>
+              <button (click)="connectWalletClicked.emit()">
+                <img src="assets/imgs/wallet-connect.png" alt="Connect Wallet" />
+                Connect Wallet
+              </button>
+            </ng-template>
+          </div>
+        </div>
+
+        <div class="buttons-column">
+          <button (click)="stakeClicked.emit()" [disabled]="!walletAddress || stakeAmount <= 0">STAKE</button>
+          <button (click)="unstakeClicked.emit()" [disabled]="!walletAddress || userStake <= 0">UNSTAKE</button>
+          <button (click)="claimClicked.emit()" [disabled]="!walletAddress || rewards <= 0">CLAIM REWARDS</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
