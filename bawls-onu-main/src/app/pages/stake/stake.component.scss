@@ -1,23 +1,29 @@
+.staking-wrapper {
+  position: relative;
+  padding-bottom: 125px;
+}
+
 .stake-layout {
-  // max-width: 1200px;
   padding: 0 1rem;
 }
 
-.stake-inner-container {
-  z-index: 1;
-}
 
 .mascot-image {
   height: 520px;
-  transform: translate(-60px, 100px);
+  transform: translate(-40px, 100px);
   object-fit: contain;
-  z-index: 1;
+  z-index: 2;
   pointer-events: none;
 }
 
-svg {
+.wave-svg {
   z-index: 20;
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  z-index: 5;
 }
 
 
@@ -54,5 +60,67 @@ svg {
     .img{
       padding-left: 50px;
     }
+  }
+}
+
+@media (max-width: 1440px) {
+  .mascot-image {
+    height: 420px;
+    transform: translate(125px, 100px);
+    margin-left: -200px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .mascot-image {
+    height: 360px;
+    transform: translate(115px, 105px);
+    margin-left: -120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stake-layout {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+  .mascot-image {
+    height: 400px;
+    transform: none;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 425px) {
+  .text-titles {
+    font-size: 70px;
+    letter-spacing: 3px;
+    margin-bottom: 2rem;
+  }
+  .mascot-image {
+    margin: 0 auto;
+    height: 280px;
+    transform: none;
+  }
+}
+
+@media (max-width: 375px) {
+  .text-titles {
+    font-size: 60px;
+  }
+  .mascot-image {
+    height: 240px;
+    transform: none;
+  }
+}
+
+@media (max-width: 320px) {
+  .text-titles {
+    font-size: 50px;
+  }
+  .mascot-image {
+    height: 200px;
+    transform: none;
   }
 }

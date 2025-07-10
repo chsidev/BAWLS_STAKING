@@ -24,16 +24,6 @@
   }
 }
 
-
-.mascot-image {
-  height: 600px;
-  object-fit: contain;
-  transform: translate(-80px, 90px);
-  margin-left: -300px;
-  margin-bottom: -70px;
-  flex-shrink: 0;
-}
-
 .stake-info-card {
   font-family: 'Bricolage Grotesque', sans-serif;
   background: #43c3ff;
@@ -265,24 +255,134 @@
   }
 }
 
+@media (max-width: 1440px) {
+  .stake-info-card {
+    padding: 30px;
+    transform: translate(50px, 0px);
+  }
+
+  .buttons-column button {
+    font-size: 28px;
+    padding: 16px 20px;
+  }
+
+  .amount-input-wrapper .amount-input {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .stake-info-card {
+    padding: 24px;
+    transform: none;
+    width: 720px;
+  }
+
+  .amount-input-wrapper .amount-input {
+    font-size: 32px;
+  }
+
+  .buttons-column button {
+    font-size: 24px;
+  }
+}
+
 @media (max-width: 768px) {
+  .subtitle {    
+    padding-top: 30px;
+  }
   .stake-inner-container {
     flex-direction: column;
     align-items: center;
   }
 
   .mascot-image {
-    height: 400px;
-    transform: translateY(0px);
-    margin-bottom: 0;
+    height: 320px;
+    transform: none;
+    margin: 0 auto;
   }
 
   .stake-info-card {
+    margin-top: -95px;
     width: 100%;
+    padding: 20px;
+  }
+
+  .card-content {
+    flex-direction: column;
+    gap: 16px;
   }
 
   .buttons-column, .details-column {
     width: 100%;
-    align-items: stretch;
-  }  
+  }
+
+  .amount-input-wrapper .amount-input {
+    font-size: 28px;
+  }
+
+  .buttons-column button {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 425px) {
+  .subtitle {
+    font-size: 20px;
+    flex-wrap: wrap;
+  }
+
+  .amount-label {
+    font-size: 18px;
+    margin-top: -20px;
+  }
+
+  .badge {
+    font-size: 12px;
+  }
+
+  .tax-info {
+    font-size: 12px;
+  }
+
+  .buttons-column button {
+    font-size: 18px;
+    padding: 14px;
+  }
+
+  .wallet-button-container button {
+    font-size: 12px;
+  }
+  
+  .stake-info-card {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 375px) {
+  .mascot-image {
+    height: 260px;
+  }
+
+  .stake-info-card {
+    padding: 16px;
+  }
+
+  .amount-input-wrapper .amount-input {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 320px) {
+  .subtitle {
+    font-size: 18px;
+  }
+
+  .amount-input-wrapper .amount-input {
+    font-size: 20px;
+  }
+
+  .buttons-column button {
+    font-size: 16px;
+  }
 }

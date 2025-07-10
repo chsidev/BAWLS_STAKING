@@ -32,10 +32,7 @@ export class StakeComponent {
   @ViewChild(HistoryComponent) historyComponent!: HistoryComponent;
   
   public menuItems = [
-    { id: 'about', name: 'ABOUT US', isActive: false},
-    { id: 'tokenomics', name: 'TOKENOMICS', isActive: false},
-    { id: 'memes', name: 'MEMES', isActive: false},
-    { id: 'impact', name: 'IMPACT', isActive: false}
+    { id: 'home', name: 'Home', isActive: false}
   ]
 
   private countdownInterval: any = null;
